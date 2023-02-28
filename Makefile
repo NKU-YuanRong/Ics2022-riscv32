@@ -1,5 +1,5 @@
-STUID = 211220000
-STUNAME = 张三
+STUID = 2012543
+STUNAME = YANCHEN LIU
 
 # DO NOT modify the following code!!!
 
