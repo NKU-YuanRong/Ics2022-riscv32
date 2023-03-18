@@ -123,6 +123,7 @@ void cpu_exec(uint64_t n) {
   }
 }
 
-void cpu_nemu_quit() {
+/* Command 'q' to quit nemu. */
+void cpu_quit() {
   nemu_state.state = NEMU_QUIT;
 }
