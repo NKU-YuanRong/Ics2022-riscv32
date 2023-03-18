@@ -111,7 +111,7 @@ config CC_LTO
 
 config CC_DEBUG
   bool "Enable debug information"
-  default n
+  default y
 
 config CC_ASAN
   depends on MODE_SYSTEM
