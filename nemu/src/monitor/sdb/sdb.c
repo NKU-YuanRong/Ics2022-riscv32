@@ -119,7 +119,7 @@ static int cmd_si(char *args) {
       }
       else {
         // invalid input
-        Log("nemu: invalid input at args of cmd_si");
+        Log("nemu: invalid input args of cmd_si");
         assert(0);
       }
     }
