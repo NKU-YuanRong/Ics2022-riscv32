@@ -67,6 +67,9 @@ static int info_r() {
   return 0;
 }
 
+static int cmd_x(char *args);
+
+// struct set for info command
 static struct {
   const char *arg;
   const char *description;
@@ -88,6 +91,7 @@ static struct {
   /* TODO: Add more commands */
   { "si", "Execute sigle instruction", cmd_si },
   { "info", "Show program status", cmd_info },
+  { "x", "Scan a storage area", cmd_x },
 
 };
 
@@ -158,17 +162,23 @@ static int cmd_info(char *args) {
     int i;
     for (i = 0; i < ARRLEN(info_table); i ++) {
       if (strcmp(args, info_table[i].arg) == 0) {
+        // find match, call the process function and quit
         info_table[i].handler();
         return 0;
       }
     }
   }
+  // no argument or invalid argument, print inst list
   int i;
   printf("For help, type 'help'.\n");
   printf("List of info subcommands:\n\n");
   for (i = 0; i < ARRLEN(info_table); i ++) {
     printf("info %s -- %s\n", info_table[i].arg, info_table[i].description);
   }
+  return 0;
+}
+
+static int cmd_x(char *args) {
   return 0;
 }
 

@@ -24,6 +24,9 @@ const char *regs[] = {
 };
 
 void isa_reg_display() {
+  /*
+  cpu contains pc register and 32 other registers, just print as hex number
+  */
   printf("pc\t0x%x\n", cpu.pc);
   int i;
   for (i = 0; i < ARRLEN(regs); i++) {
