@@ -156,7 +156,7 @@ static bool make_token(char *e) {
             nr_token++;
             break;
           default:
-            Log("Wrong token type");
+            Log("Wrong token type!");
             assert(0);
         }
 
