@@ -213,8 +213,8 @@ static int cmd_x(char *args) {
       int i;
       for (i = 0; i < N; i++) {
         exp_value += 4 * i;
-        // printf("0x%08x: ", (uint32_t)exp_value);
-        printf("0x%02x 0x%02x 0x%02x 0x%02x\n", vaddr_read(exp_value + 3, 1), vaddr_read(exp_value + 2, 1), vaddr_read(exp_value + 1, 1), vaddr_read(exp_value, 1));
+        printf("0x%08x: ", (uint32_t)exp_value);
+        printf("%02x %02x %02x %02x\n", vaddr_read(exp_value + 3, 1), vaddr_read(exp_value + 2, 1), vaddr_read(exp_value + 1, 1), vaddr_read(exp_value, 1));
       }
     }
   }
