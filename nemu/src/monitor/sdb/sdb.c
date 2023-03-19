@@ -23,6 +23,7 @@ static int is_batch_mode = false;
 
 void init_regex();
 void init_wp_pool();
+word_t vaddr_read(vaddr_t addr, int len);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -211,7 +212,8 @@ static int cmd_x(char *args) {
       exp_value = str2u64t(expr);
       int i;
       for (i = 0; i < N; i++) {
-        printf("%lu\n", exp_value + i);
+        // printf("%c\n", vaddr_read(exp_value + i));
+        printf("%04d\n", vaddr_read(exp_value + i, 1));
       }
     }
   }
