@@ -128,7 +128,7 @@ uint64_t str2u64t(char *args, char *errmsg) {
   args = strtok(args, " ");
 
   if (args == NULL) {
-    // Log(errmsg);
+    printf("%s", errmsg);
     assert(0);
   }
 
@@ -142,7 +142,7 @@ uint64_t str2u64t(char *args, char *errmsg) {
     }
     else {
       // invalid input
-      // Log(errmsg);
+      printf("%s", errmsg);
       assert(0);
     }
   }
