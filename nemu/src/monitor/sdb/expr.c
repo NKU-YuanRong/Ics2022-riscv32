@@ -21,7 +21,16 @@
 #include <regex.h>
 
 enum {
-  TK_NOTYPE = 256, TK_EQ,
+  TK_NOTYPE = 256,
+  TK_EQ,
+  TK_LE,
+  TK_ME,
+  TK_LT,
+  TK_MT,
+  TK_LP,
+  TK_RP,
+  TK_HEX,
+  TK_DEC,
 
   /* TODO: Add more token types */
 
@@ -38,7 +47,18 @@ static struct rule {
 
   {" +", TK_NOTYPE},    // spaces
   {"\\+", '+'},         // plus
+  {"-", '-'},           // minus
+  {"\\*", '*'},         // nulti
+  {"/", '/'},           // devide
   {"==", TK_EQ},        // equal
+  {"<=", TK_LE},        // less equal
+  {">=", TK_ME},        // more equal
+  {"<", TK_LT},         // less than
+  {">", TK_MT},         // more than
+  {"(", TK_LP},         // left paren
+  {")", TK_RP},         // right paren
+  {"0[xX][0-9a-fA-F]+", TK_HEX}, // hex number
+  {"[0-9]+", TK_DEC},   // dec number
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -95,7 +115,45 @@ static bool make_token(char *e) {
          */
 
         switch (rules[i].token_type) {
-          default: TODO();
+          case TK_NOTYPE:
+            break;
+          case TK_EQ:
+          case TK_LE:
+          case TK_ME:
+          case TK_LT:
+          case TK_MT:
+          case TK_LP:
+          case TK_RP:
+            tokens[nr_token].type = rules[i].token_type;
+            nr_token++;
+            break;
+          case TK_HEX:
+            tokens[nr_token].type = rules[i].token_type;
+            if (substr_len <= 31) {
+              int i;
+              for (i = 0; i < substr_len; i++) {
+                tokens[nr_token].str[i] = e[position - substr_len + i];
+              }
+              tokens[nr_token].str[i] = '\0';
+            }
+            else {}
+            nr_token++;
+            break;
+          case TK_DEC:
+            tokens[nr_token].type = rules[i].token_type;
+            if (substr_len <= 31) {
+              int i;
+              for (i = 0; i < substr_len; i++) {
+                tokens[nr_token].str[i] = e[position - substr_len + i];
+              }
+              tokens[nr_token].str[i] = '\0';
+            }
+            else {}
+            nr_token++;
+            break;
+          default:
+            Log("Wrong token type");
+            assert(0);
         }
 
         break;

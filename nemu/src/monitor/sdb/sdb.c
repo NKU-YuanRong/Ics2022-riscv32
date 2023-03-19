@@ -207,12 +207,15 @@ static int cmd_x(char *args) {
 
   // arg to store every argument
   char *arg = strtok(args, " ");
-  char *expr = strtok(NULL, " ");
+  char *exp = strtok(NULL, " ");
 
   if (arg != NULL) {
     N = str2u64t(arg);
-    if (expr != NULL) {
-      exp_value = str2u64t(expr);
+    if (exp != NULL) {
+      // exp_value = str2u64t(expr);
+      bool suc;
+      exp_value = expr(exp, &suc);
+      assert(suc == true);
       int i;
       for (i = 0; i < N; i++) {
         printf("0x%08x: ", (uint32_t)exp_value);
