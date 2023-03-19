@@ -56,7 +56,7 @@ static int cmd_q(char *args) {
 
 static int cmd_help(char *args);
 
-uint64_t str2u64t(char *args, char *errmsg);
+uint64_t str2u64t(char *args);
 
 // command single executing, use uint32_t
 static int cmd_si(char *args);
@@ -123,12 +123,11 @@ static int cmd_help(char *args) {
 }
 
 
-uint64_t str2u64t(char *args, char *errmsg) {
+uint64_t str2u64t(char *args) {
   //just use the first argument, ignore others
   args = strtok(args, " ");
 
   if (args == NULL) {
-    printf("%s", errmsg);
     assert(0);
   }
 
@@ -142,7 +141,6 @@ uint64_t str2u64t(char *args, char *errmsg) {
     }
     else {
       // invalid input
-      printf("%s", errmsg);
       assert(0);
     }
   }
@@ -163,7 +161,7 @@ static int cmd_si(char *args) {
   args = strtok(args, " ");
 
   // calculating the value of N
-  N = str2u64t(args, "nemu: invalid input args of cmd_si");
+  N = str2u64t(args);
   /*
   char *args_ptr = args;
   for (int i = 0; i < strlen(args); i++) {
