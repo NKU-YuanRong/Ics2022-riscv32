@@ -184,12 +184,12 @@ word_t expr(char *e, bool *success) {
     return 0;
   }
   Log("match succesfully! valid token number: %d\n", nr_token);
-  // printf("valid tokens: %d\n", nr_token);
-  return 1;
 
   for (int i = 0; i < nr_token; i++) {
-    printf("Token%d-Type:-%d,-Value:-%s\n", i, tokens[i].type, tokens[i].str);
+    printf("Token%d-Type:-%d,-Value:-%s", i, tokens[i].type, tokens[i].str);
   }
+
+  return 1;
 
   /* TODO: Insert codes to evaluate the expression. */
   TODO();
