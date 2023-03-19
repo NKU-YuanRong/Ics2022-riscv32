@@ -162,20 +162,9 @@ static int cmd_si(char *args) {
 
   // calculating the value of N
   N = str2u64t(args);
-  /*
-  char *args_ptr = args;
-  for (int i = 0; i < strlen(args); i++) {
-    if ('0' <= args_ptr[i] && '9' >= args_ptr[i]) {
-      N *= 10;
-      N += (uint64_t)(args_ptr[i] - '0');
-    }
-    else {
-      // invalid input
-      Log("nemu: invalid input args of cmd_si");
-      assert(0);
-    }
-  }*/
-  printf("Test: N = %lu\n", N);
+
+  // printf("Test: N = %lu\n", N);
+  // execute N insts
   cpu_exec(N);
 
   return 0;
@@ -208,7 +197,7 @@ static int cmd_info(char *args) {
 
 static int cmd_x(char *args) {
   // N to record the specific value of the first argument
-  /*
+  
   uint64_t N = 0;
   uint64_t exp_value = 0;
 
@@ -217,11 +206,15 @@ static int cmd_x(char *args) {
   char *expr = strtok(NULL, " ");
 
   if (arg != NULL) {
-    N = str2u64t(arg, "nemu: invalid input args of cmd_x number");
+    N = str2u64t(arg);
     if (expr != NULL) {
-      exp_value = str2u64t(expr, "nemu: invalid input args of cmd_x expr");
+      exp_value = str2u64t(expr);
+      int i;
+      for (i = 0; i < N; i++) {
+        printf("%lu\n", exp_value + i);
+      }
     }
-  }*/
+  }
   
   return 0;
 }
