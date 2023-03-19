@@ -113,7 +113,7 @@ static bool make_token(char *e) {
          * to record the token in the array `tokens'. For certain types
          * of tokens, some extra actions should be performed.
          */
-        
+
         switch (rules[i].token_type) {
           case TK_NOTYPE:
             break;
@@ -124,6 +124,10 @@ static bool make_token(char *e) {
           case TK_MT:
           case TK_LP:
           case TK_RP:
+          case '+':
+          case '-':
+          case '*':
+          case '/':
             tokens[nr_token].type = rules[i].token_type;
             nr_token++;
             break;
@@ -140,7 +144,6 @@ static bool make_token(char *e) {
             nr_token++;
             break;
           case TK_DEC:
-            Log("decimal matched!");
             tokens[nr_token].type = rules[i].token_type;
             if (substr_len <= 31) {
               int i;
