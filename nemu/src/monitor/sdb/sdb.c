@@ -99,8 +99,33 @@ static int cmd_help(char *args) {
 }
 
 static int cmd_si(char *args) {
-  // just run one inst
-  cpu_exec(1);
+  // just run N insts
+  if (args == NULL) {
+    cpu_exec(1);
+  }
+  else {
+    // N to record the specific value of the first argument
+    uint64_t N = 0;
+
+    // ignore useless arguments
+    args = strtok(args, " ");
+
+    // calculating the value of N
+    char *args_ptr = args;
+    for (int i = 0; i < strlen(args); i++) {
+      if ('0' <= args_ptr[i] && '9' >= args_ptr[i]) {
+        N *= 10;
+        N += (uint64_t)(args_ptr[i] - '0');
+      }
+      else {
+        // invalid input
+        Log("nemu: invalid input at args of cmd_si");
+        assert(0);
+      }
+    }
+    printf("Test: N = %lu\n", N);
+    cpu_exec(N);
+  }
   return 0;
 }
 
