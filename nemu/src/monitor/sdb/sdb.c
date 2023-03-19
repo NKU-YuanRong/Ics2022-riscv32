@@ -212,7 +212,7 @@ static int cmd_x(char *args) {
       exp_value = str2u64t(expr);
       int i;
       for (i = 0; i < N; i++) {
-        exp_value += 4 * i;
+        exp_value += 4;
         printf("0x%08x: ", (uint32_t)exp_value);
         printf("%02x %02x %02x %02x\n", vaddr_read(exp_value + 3, 1), vaddr_read(exp_value + 2, 1), vaddr_read(exp_value + 1, 1), vaddr_read(exp_value, 1));
       }
