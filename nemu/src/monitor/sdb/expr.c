@@ -179,8 +179,8 @@ word_t expr(char *e, bool *success) {
     *success = false;
     return 0;
   }
-  Log("match succesfully!");
-  printf("valid tokens: %d\n", nr_token);
+  Log("match succesfully! valid tokens: %d\n", nr_token);
+  // printf("valid tokens: %d\n", nr_token);
   return 1;
 
   for (int i = 0; i < nr_token; i++) {
