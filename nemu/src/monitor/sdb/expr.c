@@ -55,8 +55,8 @@ static struct rule {
   {">=", TK_ME},        // more equal
   {"<", TK_LT},         // less than
   {">", TK_MT},         // more than
-  {"(", TK_LP},         // left paren
-  {")", TK_RP},         // right paren
+  {"\\(", TK_LP},         // left paren
+  {"\\)", TK_RP},         // right paren
   // {"0[xX][0-9a-fA-F]+", TK_HEX}, // hex number
   {"0", TK_HEX}, // hex number
   // {"[0-9]+", TK_DEC},   // dec number
