@@ -24,8 +24,6 @@ static int is_batch_mode = false;
 void init_regex();
 void init_wp_pool();
 
-// Just declare before use
-word_t vaddr_read(vaddr_t addr, int len);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -75,10 +73,13 @@ static int info_r() {
 // command scan the memory
 static int cmd_x(char *args);
 
-// test token parser, args is an expression
-static int cmd_tpsr(char *args) {
+// Solve expression
+static int cmd_p(char *args) {
   bool suc = false;
   expr(args, &suc);
+  if (!suc) {
+    Log("Solve fail!");
+  }
   return 0;
 }
 
@@ -105,10 +106,9 @@ static struct {
   { "si", "Execute sigle instruction", cmd_si },
   { "info", "Show program status", cmd_info },
   { "x", "Scan a storage area", cmd_x },
-
+  { "p", "Solve an expression", cmd_p },
 
   // test instructions
-  { "tpsr", "Test token parser", cmd_tpsr },
 
 };
 
