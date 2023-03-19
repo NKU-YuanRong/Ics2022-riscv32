@@ -24,10 +24,10 @@ const char *regs[] = {
 };
 
 void isa_reg_display() {
-  printf("pc\t%04x\n", cpu.pc);
+  printf("pc\t%08x\n", cpu.pc);
   int i;
   for (i = 0; i < ARRLEN(regs); i++) {
-    printf("%s\t%04x\n", regs[i], cpu.gpr[i]);
+    printf("%s\t%08x\n", regs[i], cpu.gpr[i]);
   }
 }
 
