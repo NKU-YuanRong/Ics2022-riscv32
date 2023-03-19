@@ -23,6 +23,8 @@ static int is_batch_mode = false;
 
 void init_regex();
 void init_wp_pool();
+
+// Just declare before use
 word_t vaddr_read(vaddr_t addr, int len);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
@@ -70,6 +72,7 @@ static int info_r() {
   return 0;
 }
 
+// command scan the memory
 static int cmd_x(char *args);
 
 // struct set for info command
@@ -216,8 +219,11 @@ static int cmd_x(char *args) {
         printf("%02x %02x %02x %02x\n", vaddr_read(exp_value + 3, 1), vaddr_read(exp_value + 2, 1), vaddr_read(exp_value + 1, 1), vaddr_read(exp_value, 1));
         exp_value += 4;
       }
+      return 0;
     }
   }
+  printf("x command with no argument!\n");
+  assert(0);
   
   return 0;
 }
