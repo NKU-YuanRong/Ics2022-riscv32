@@ -56,6 +56,8 @@ static int cmd_q(char *args) {
 
 static int cmd_help(char *args);
 
+uint64_t str2u64t(char *args, char *errmsg);
+
 // command single executing, use uint32_t
 static int cmd_si(char *args);
 
