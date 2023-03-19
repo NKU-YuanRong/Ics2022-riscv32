@@ -186,7 +186,7 @@ word_t expr(char *e, bool *success) {
   Log("match succesfully! valid token number: %d\n", nr_token);
 
   for (int i = 0; i < nr_token; i++) {
-    printf("Token%d-Type:-%d,-Value:-%s", i, tokens[i].type, tokens[i].str);
+    printf("Token%d-Type:-%d,-Value:-%s\n", i, tokens[i].type, tokens[i].str);
   }
 
   return 1;
