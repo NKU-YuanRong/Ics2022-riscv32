@@ -180,6 +180,7 @@ word_t expr(char *e, bool *success) {
     return 0;
   }
   Log("match succesfully!");
+  return 1;
 
   for (int i = 0; i < nr_token; i++) {
     printf("Token%d-Type:-%d,-Value:-%s\n", i, tokens[i].type, tokens[i].str);
