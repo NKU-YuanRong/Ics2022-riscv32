@@ -58,9 +58,7 @@ static struct rule {
   {"\\(", TK_LP},         // left paren
   {"\\)", TK_RP},         // right paren
   {"0[xX][0-9a-fA-F]+", TK_HEX}, // hex number
-  // {"0", TK_HEX}, // hex number
   {"[0-9]+", TK_DEC},   // dec number
-  // {"1", TK_DEC},   // dec number
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -177,6 +175,11 @@ word_t expr(char *e, bool *success) {
     *success = false;
     return 0;
   }
+  Log("match over!");
+  for (int i = 0; i < nr_token; i++) {
+    printf("Token%d-Type:-%d,-Value:-%s\n", i, tokens[i].type, tokens[i].str);
+  }
+  return 1;
 
   /* TODO: Insert codes to evaluate the expression. */
   TODO();
