@@ -113,7 +113,7 @@ static bool make_token(char *e) {
          * to record the token in the array `tokens'. For certain types
          * of tokens, some extra actions should be performed.
          */
-        printf("Match this: %d", rules[i].token_type);
+        
         switch (rules[i].token_type) {
           case TK_NOTYPE:
             break;
