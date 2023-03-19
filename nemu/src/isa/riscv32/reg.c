@@ -27,10 +27,10 @@ void isa_reg_display() {
   /*
   cpu contains pc register and 32 other registers, just print as hex number
   */
-  printf("pc\t0x%x\n", cpu.pc);
+  printf("pc\t0x%x\t%d\n", cpu.pc, cpu.pc);
   int i;
   for (i = 0; i < ARRLEN(regs); i++) {
-    printf("%s\t0x%x\n", regs[i], cpu.gpr[i]);
+    printf("%s\t0x%x\t%d\n", regs[i], cpu.gpr[i], cpu.gpr[i]);
   }
 }
 
