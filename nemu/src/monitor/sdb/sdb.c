@@ -120,6 +120,32 @@ static int cmd_help(char *args) {
   return 0;
 }
 
+/*
+uint64_t str2u64t(char *args, char *errmsg) {
+  //just use the first argument, ignore others
+  args = strtok(args, " ");
+
+  if (args == NULL) {
+    Log(errmsg);
+    assert(0);
+  }
+
+  uint64_t N = 0;
+
+  char *args_ptr = args;
+  for (int i = 0; i < strlen(args); i++) {
+    if ('0' <= args_ptr[i] && '9' >= args_ptr[i]) {
+      N *= 10;
+      N += (uint64_t)(args_ptr[i] - '0');
+    }
+    else {
+      // invalid input
+      Log(errmsg);
+      assert(0);
+    }
+  }
+  return N;
+}*/
 
 static int cmd_si(char *args) {
   // just run N insts
@@ -135,6 +161,8 @@ static int cmd_si(char *args) {
   args = strtok(args, " ");
 
   // calculating the value of N
+  // N = str2u64t(args, "nemu: invalid input args of cmd_si");
+  
   char *args_ptr = args;
   for (int i = 0; i < strlen(args); i++) {
     if ('0' <= args_ptr[i] && '9' >= args_ptr[i]) {
@@ -179,6 +207,22 @@ static int cmd_info(char *args) {
 }
 
 static int cmd_x(char *args) {
+  // N to record the specific value of the first argument
+  /*
+  uint64_t N = 0;
+  uint64_t exp_value = 0;
+
+  // arg to store every argument
+  char *arg = strtok(args, " ");
+  char *expr = strtok(NULL, " ");
+
+  if (arg != NULL) {
+    N = str2u64t(arg, "nemu: invalid input args of cmd_x number");
+    if (expr != NULL) {
+      exp_value = str2u64t(expr, "nemu: invalid input args of cmd_x expr");
+    }
+  }*/
+  
   return 0;
 }
 
