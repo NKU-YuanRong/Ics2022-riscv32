@@ -72,6 +72,7 @@ static int info_r() {
   return 0;
 }
 
+// command scan the memory
 static int cmd_x(char *args);
 
 // struct set for info command
