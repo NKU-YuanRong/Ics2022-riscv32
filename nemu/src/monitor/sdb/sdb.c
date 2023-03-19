@@ -122,13 +122,13 @@ static int cmd_help(char *args) {
   return 0;
 }
 
-/*
+
 uint64_t str2u64t(char *args, char *errmsg) {
   //just use the first argument, ignore others
   args = strtok(args, " ");
 
   if (args == NULL) {
-    Log(errmsg);
+    // Log(errmsg);
     assert(0);
   }
 
@@ -142,12 +142,12 @@ uint64_t str2u64t(char *args, char *errmsg) {
     }
     else {
       // invalid input
-      Log(errmsg);
+      // Log(errmsg);
       assert(0);
     }
   }
   return N;
-}*/
+}
 
 static int cmd_si(char *args) {
   // just run N insts
