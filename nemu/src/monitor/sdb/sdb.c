@@ -165,7 +165,7 @@ static int cmd_info(char *args) {
   }
   int i;
   for (i = 0; i < ARRLEN(info_table); i ++) {
-    printf("info %s --%s", info_table[i].arg, info_table[i].description);
+    printf("info %s --%s\n", info_table[i].arg, info_table[i].description);
   }
   return 0;
 }
