@@ -140,7 +140,9 @@ static bool make_token(char *e) {
               }
               tokens[nr_token].str[i] = '\0';
             }
-            else {}
+            else {
+              printf("Token string is loger than 32!\n");
+            }
             nr_token++;
             break;
           case TK_DEC:
@@ -152,7 +154,9 @@ static bool make_token(char *e) {
               }
               tokens[nr_token].str[i] = '\0';
             }
-            else {}
+            else {
+              printf("Token string is loger than 32!\n");
+            }
             nr_token++;
             break;
           default:
@@ -179,7 +183,7 @@ word_t expr(char *e, bool *success) {
     *success = false;
     return 0;
   }
-  Log("match succesfully! valid tokens: %d\n", nr_token);
+  Log("match succesfully! valid token number: %d\n", nr_token);
   // printf("valid tokens: %d\n", nr_token);
   return 1;
 
