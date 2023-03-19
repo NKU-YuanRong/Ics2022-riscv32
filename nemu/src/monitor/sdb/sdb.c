@@ -163,8 +163,8 @@ static int cmd_si(char *args) {
   args = strtok(args, " ");
 
   // calculating the value of N
-  // N = str2u64t(args, "nemu: invalid input args of cmd_si");
-  
+  N = str2u64t(args, "nemu: invalid input args of cmd_si");
+  /*
   char *args_ptr = args;
   for (int i = 0; i < strlen(args); i++) {
     if ('0' <= args_ptr[i] && '9' >= args_ptr[i]) {
@@ -176,7 +176,7 @@ static int cmd_si(char *args) {
       Log("nemu: invalid input args of cmd_si");
       assert(0);
     }
-  }
+  }*/
   printf("Test: N = %lu\n", N);
   cpu_exec(N);
 
