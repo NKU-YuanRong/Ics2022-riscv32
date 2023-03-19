@@ -62,6 +62,20 @@ static int cmd_si(char *args);
 // command shows program status
 static int cmd_info(char *args);
 
+static int info_r() {
+  isa_reg_display();
+  return 0;
+}
+
+static struct {
+  const char *arg;
+  const char *description;
+  int (*handler) (void);
+} info_table [] = {
+  { "r", "Print all registers", info_r },
+};
+
+
 static struct {
   const char *name;
   const char *description;
@@ -102,9 +116,6 @@ static int cmd_help(char *args) {
   return 0;
 }
 
-static int cmd_info(char *args) {
-  return 0;
-}
 
 static int cmd_si(char *args) {
   // just run N insts
@@ -135,6 +146,27 @@ static int cmd_si(char *args) {
   printf("Test: N = %lu\n", N);
   cpu_exec(N);
 
+  return 0;
+}
+
+static int cmd_info(char *args) {
+  if (args != NULL) {
+    // ignore useless arguments
+    args = strtok(args, " ");
+
+    // find the operation
+    int i;
+    for (i = 0; i < ARRLEN(info_table); i ++) {
+      if (strcmp(args, info_table[i].arg) == 0) {
+        info_table[i].handler();
+        return 0;
+      }
+    }
+  }
+  int i;
+  for (i = 0; i < ARRLEN(info_table); i ++) {
+    printf("info %s --%s", info_table[i].arg, info_table[i].description);
+  }
   return 0;
 }
 
