@@ -23,6 +23,7 @@ static int is_batch_mode = false;
 
 void init_regex();
 void init_wp_pool();
+word_t vaddr_read(vaddr_t addr, int len);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -43,6 +44,7 @@ static char* rl_gets() {
 }
 
 static int cmd_c(char *args) {
+  // -1 the parameter is uint64_t type, so -1 means the max value of uint64_t(full of 1)
   cpu_exec(-1);
   return 0;
 }
@@ -55,6 +57,31 @@ static int cmd_q(char *args) {
 
 static int cmd_help(char *args);
 
+uint64_t str2u64t(char *args);
+
+// command single executing, use uint32_t
+static int cmd_si(char *args);
+
+// command shows program status
+static int cmd_info(char *args);
+
+static int info_r() {
+  isa_reg_display();
+  return 0;
+}
+
+static int cmd_x(char *args);
+
+// struct set for info command
+static struct {
+  const char *arg;
+  const char *description;
+  int (*handler) (void);
+} info_table [] = {
+  { "r", "Print all registers", info_r },
+};
+
+
 static struct {
   const char *name;
   const char *description;
@@ -65,6 +92,9 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
 
   /* TODO: Add more commands */
+  { "si", "Execute sigle instruction", cmd_si },
+  { "info", "Show program status", cmd_info },
+  { "x", "Scan a storage area", cmd_x },
 
 };
 
@@ -90,6 +120,105 @@ static int cmd_help(char *args) {
     }
     printf("Unknown command '%s'\n", arg);
   }
+  return 0;
+}
+
+
+uint64_t str2u64t(char *args) {
+  //just use the first argument, ignore others
+  args = strtok(args, " ");
+
+  if (args == NULL) {
+    assert(0);
+  }
+
+  uint64_t N = 0;
+
+  char *args_ptr = args;
+  for (int i = 0; i < strlen(args); i++) {
+    if ('0' <= args_ptr[i] && '9' >= args_ptr[i]) {
+      N *= 10;
+      N += (uint64_t)(args_ptr[i] - '0');
+    }
+    else {
+      // invalid input
+      assert(0);
+    }
+  }
+  return N;
+}
+
+static int cmd_si(char *args) {
+  // just run N insts
+  if (args == NULL) {
+    cpu_exec(1);
+    return 0;
+  }
+
+  // N to record the specific value of the first argument
+  uint64_t N = 0;
+
+  // ignore useless arguments
+  args = strtok(args, " ");
+
+  // calculating the value of N
+  N = str2u64t(args);
+
+  // printf("Test: N = %lu\n", N);
+  // execute N insts
+  cpu_exec(N);
+
+  return 0;
+}
+
+static int cmd_info(char *args) {
+  if (args != NULL) {
+    // ignore useless arguments
+    args = strtok(args, " ");
+
+    // find the operation
+    int i;
+    for (i = 0; i < ARRLEN(info_table); i ++) {
+      if (strcmp(args, info_table[i].arg) == 0) {
+        // find match, call the process function and quit
+        info_table[i].handler();
+        return 0;
+      }
+    }
+  }
+  // no argument or invalid argument, print inst list
+  int i;
+  printf("For help, type 'help'.\n");
+  printf("List of info subcommands:\n\n");
+  for (i = 0; i < ARRLEN(info_table); i ++) {
+    printf("info %s -- %s\n", info_table[i].arg, info_table[i].description);
+  }
+  return 0;
+}
+
+static int cmd_x(char *args) {
+  // N to record the specific value of the first argument
+  
+  uint64_t N = 0;
+  uint64_t exp_value = 0;
+
+  // arg to store every argument
+  char *arg = strtok(args, " ");
+  char *expr = strtok(NULL, " ");
+
+  if (arg != NULL) {
+    N = str2u64t(arg);
+    if (expr != NULL) {
+      exp_value = str2u64t(expr);
+      int i;
+      for (i = 0; i < N; i++) {
+        printf("0x%08x: ", (uint32_t)exp_value);
+        printf("%02x %02x %02x %02x\n", vaddr_read(exp_value + 3, 1), vaddr_read(exp_value + 2, 1), vaddr_read(exp_value + 1, 1), vaddr_read(exp_value, 1));
+        exp_value += 4;
+      }
+    }
+  }
+  
   return 0;
 }
 
