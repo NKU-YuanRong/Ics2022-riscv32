@@ -75,9 +75,9 @@ static int info_r() {
 // command scan the memory
 static int cmd_x(char *args);
 
-// test tokens
-static int cmd_ttt(char *args) {
-  bool suc;
+// test token parser, args is an expression
+static int cmd_tpsr(char *args) {
+  bool suc = false;
   expr(args, &suc);
   return 0;
 }
@@ -108,7 +108,7 @@ static struct {
 
 
   // test instructions
-  { "ttt", "Test token parser", cmd_ttt },
+  { "tpsr", "Test token parser", cmd_tpsr },
 
 };
 
