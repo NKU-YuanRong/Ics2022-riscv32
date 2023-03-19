@@ -164,8 +164,10 @@ static int cmd_info(char *args) {
     }
   }
   int i;
+  printf("For help, type 'help'.\n");
+  printf("List of info subcommands:\n\n");
   for (i = 0; i < ARRLEN(info_table); i ++) {
-    printf("info %s --%s\n", info_table[i].arg, info_table[i].description);
+    printf("info %s -- %s\n", info_table[i].arg, info_table[i].description);
   }
   return 0;
 }
