@@ -43,6 +43,7 @@ static char* rl_gets() {
 }
 
 static int cmd_c(char *args) {
+  // -1 the parameter is uint64_t type, so -1 means the max value of uint64_t(full of 1)
   cpu_exec(-1);
   return 0;
 }
@@ -55,6 +56,9 @@ static int cmd_q(char *args) {
 
 static int cmd_help(char *args);
 
+// command single executing, use uint32_t
+static int cmd_si(char *args);
+
 static struct {
   const char *name;
   const char *description;
@@ -65,6 +69,7 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
 
   /* TODO: Add more commands */
+  { "si", "Execute sigle instruction", cmd_si },
 
 };
 
@@ -90,6 +95,12 @@ static int cmd_help(char *args) {
     }
     printf("Unknown command '%s'\n", arg);
   }
+  return 0;
+}
+
+static int cmd_si(char *args) {
+  // just run one inst
+  cpu_exec(1);
   return 0;
 }
 
