@@ -57,10 +57,10 @@ static struct rule {
   {">", TK_MT},         // more than
   {"\\(", TK_LP},         // left paren
   {"\\)", TK_RP},         // right paren
-  // {"0[xX][0-9a-fA-F]+", TK_HEX}, // hex number
-  {"0", TK_HEX}, // hex number
-  // {"[0-9]+", TK_DEC},   // dec number
-  {"1", TK_DEC},   // dec number
+  {"0[xX][0-9a-fA-F]+", TK_HEX}, // hex number
+  // {"0", TK_HEX}, // hex number
+  {"[0-9]+", TK_DEC},   // dec number
+  // {"1", TK_DEC},   // dec number
 };
 
 #define NR_REGEX ARRLEN(rules)
