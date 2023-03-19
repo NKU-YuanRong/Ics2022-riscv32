@@ -140,6 +140,7 @@ static bool make_token(char *e) {
             nr_token++;
             break;
           case TK_DEC:
+            Log("decimal matched!");
             tokens[nr_token].type = rules[i].token_type;
             if (substr_len <= 31) {
               int i;
