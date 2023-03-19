@@ -179,11 +179,11 @@ word_t expr(char *e, bool *success) {
     *success = false;
     return 0;
   }
-  Log("match over!");
+  Log("match succesfully!");
+
   for (int i = 0; i < nr_token; i++) {
     printf("Token%d-Type:-%d,-Value:-%s\n", i, tokens[i].type, tokens[i].str);
   }
-  return 1;
 
   /* TODO: Insert codes to evaluate the expression. */
   TODO();

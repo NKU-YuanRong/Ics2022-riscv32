@@ -75,6 +75,13 @@ static int info_r() {
 // command scan the memory
 static int cmd_x(char *args);
 
+// test tokens
+static int cmd_ttt(char *args) {
+  bool suc;
+  expr(args, &suc);
+  return 0;
+}
+
 // struct set for info command
 static struct {
   const char *arg;
@@ -98,6 +105,10 @@ static struct {
   { "si", "Execute sigle instruction", cmd_si },
   { "info", "Show program status", cmd_info },
   { "x", "Scan a storage area", cmd_x },
+
+
+  // test instructions
+  { "ttt", "Test token parser", cmd_ttt },
 
 };
 
