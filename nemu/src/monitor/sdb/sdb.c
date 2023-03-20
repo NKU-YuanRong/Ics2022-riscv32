@@ -139,7 +139,7 @@ static int cmd_pt(char *args) {
     }
     printf("Token Value: %d\n", val);*/
     char *exp = "";
-    gen_rand_expr(exp);
+    // gen_rand_expr(exp);
     printf("%s\n", exp);
   }
   return 0;
