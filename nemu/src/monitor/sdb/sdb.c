@@ -31,8 +31,11 @@ typedef struct watchpoint {
   struct watchpoint *next;
 
   /* TODO: Add more members if necessary */
+  char *expr;
+  uint32_t value;
 
 } WP;
+
 WP* new_wp();
 void free_wp(int N);
 
@@ -269,17 +272,28 @@ static int cmd_p(char *args) {
 }
 
 static int cmd_w(char *args) {
-  // bool suc = false;
-  // uint32_t val = expr(args, &suc);
-  // if (!suc) {
-  //   Log(ANSI_FMT("Solve fail!", ANSI_FG_RED));
-  // }
-  new_wp();
+  if (args == NULL) {
+    Log(ANSI_FMT("Please input a valid expression!", ANSI_FG_RED));
+    return 0;
+  }
+  bool suc = false;
+  uint32_t val = expr(args, &suc);
+  if (!suc) {
+    Log(ANSI_FMT("Solve fail!", ANSI_FG_RED));
+  } else {
+    WP *p = new_wp();
+    p->expr = args;
+    p->value = val;
+  }
   return 0;
 }
 
 static int cmd_d(char *args) {
   args = strtok(args, " ");
+  if (args == NULL) {
+    Log(ANSI_FMT("Please input point number!", ANSI_FG_RED));
+    return 0;
+  }
   uint32_t N = str2u32t(args);
   free_wp(N);
   return 0;
