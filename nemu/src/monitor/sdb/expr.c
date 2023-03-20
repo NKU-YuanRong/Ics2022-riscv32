@@ -210,7 +210,7 @@ bool trans_sing() {
       if ((i == 0)
       || (tokens[i - 1].type >= TK_DOUBLE_BEGIN && tokens[i - 1].type <= TK_DOUBLE_END)
       || (tokens[i - 1].type >= TK_SINGLE_BEGIN && tokens[i - 1].type <= TK_SINGLE_END)
-      || (tokens[i - 1].type == TK_RP))
+      || (tokens[i - 1].type == TK_LP))
       {
         tokens[i].type = TK_SOLV;
         find = true;
@@ -219,7 +219,7 @@ bool trans_sing() {
       if ((i == 0)
       || (tokens[i - 1].type >= TK_DOUBLE_BEGIN && tokens[i - 1].type <= TK_DOUBLE_END)
       || (tokens[i - 1].type >= TK_SINGLE_BEGIN && tokens[i - 1].type <= TK_SINGLE_END)
-      || (tokens[i - 1].type == TK_RP))
+      || (tokens[i - 1].type == TK_LP))
       {
         tokens[i].type = TK_NEG;
         find = true;
@@ -427,7 +427,7 @@ word_t expr(char *e, bool *success) {
 
   *success = true;
   return 0;
-  
+
   /*
   for (int i = 0; i < nr_token; i++) {
     Log("Token%d Type: %d, Value: %s", i, tokens[i].type, tokens[i].str);
