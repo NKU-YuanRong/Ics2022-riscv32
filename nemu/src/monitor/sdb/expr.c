@@ -271,7 +271,7 @@ word_t expr(char *e, bool *success) {
   Log("match succesfully! valid token number: %d", nr_token);
 
   for (int i = 0; i < nr_token; i++) {
-    printf("Token%d-Type:-%d,-Value:-%s\n", i, tokens[i].type, tokens[i].str);
+    Log("Token%d Type: %d, Value: %s\n", i, tokens[i].type, tokens[i].str);
   }
 
   /* TODO: Insert codes to evaluate the expression. */

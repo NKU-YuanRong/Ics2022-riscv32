@@ -76,10 +76,11 @@ static int cmd_x(char *args);
 // Solve expression
 static int cmd_p(char *args) {
   bool suc = false;
-  expr(args, &suc);
+  uint32_t val = expr(args, &suc);
   if (!suc) {
     Log("Solve fail!");
   }
+  printf("Value: %d", val);
   return 0;
 }
 
