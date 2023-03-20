@@ -178,8 +178,26 @@ static bool make_token(char *e) {
 }
 
 bool check_parentheses(int p, int q, bool *bp) {
+  // bool to record the ret
+  bool parenth = true;
+  int stack = 0;
+  for (int i = p; i <= q; i++) {
+    if (tokens[p].type == TK_LP) {
+      stack += 1;
+    }
+    else if (tokens[p].type == TK_RP) {
+      stack -= 1;
+    }
+    // check the stack
+    if (stack < 0) {
+      *bp = true;
+      return false;
+    } else if (stack == 0) {
+      parenth = false;
+    }
+  }
   *bp = false;
-  return false;
+  return parenth;
 }
 
 uint32_t eval(int p, int q) {
@@ -271,7 +289,7 @@ word_t expr(char *e, bool *success) {
   Log("match succesfully! valid token number: %d", nr_token);
 
   for (int i = 0; i < nr_token; i++) {
-    Log("Token%d Type: %d, Value: %s\n", i, tokens[i].type, tokens[i].str);
+    Log("Token%d Type: %d, Value: %s", i, tokens[i].type, tokens[i].str);
   }
 
   /* TODO: Insert codes to evaluate the expression. */
