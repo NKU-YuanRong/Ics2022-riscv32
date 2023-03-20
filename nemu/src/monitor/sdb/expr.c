@@ -22,18 +22,36 @@
 
 enum {
   TK_NOTYPE = 256,
+
+  // Double
+  TK_DOUBLE_BEGIN,
   TK_EQ,
   TK_NE,
   TK_LE,
   TK_ME,
   TK_LT,
   TK_MT,
-  TK_LP,
-  TK_RP,
-  TK_HEX,
-  TK_DEC,
   TK_LAND,
   TK_LOR,
+  TK_DOUBLE_END,
+
+  // Single
+  TK_SINGLE_BEGIN,
+  TK_NEG,
+  TK_SOLV,
+  TK_NOT,
+  TK_SINGLE_END,
+
+  //-------------------KEEP-OPERATIONS-TOGETHER----------
+
+  // Paren
+  TK_LP,
+  TK_RP,
+
+  // Number
+  TK_HEX,
+  TK_DEC,
+
 
   /* TODO: Add more token types */
 
@@ -60,7 +78,8 @@ static struct rule {
   {"<", TK_LT},         // less than
   {">", TK_MT},         // more than
   {"&&", TK_LAND},      // logic and
-  {"\\|\\|", TK_LOR},       // logic or
+  {"\\|\\|", TK_LOR},     // logic or
+  {"!", TK_NOT},          // not
   {"\\(", TK_LP},         // left paren
   {"\\)", TK_RP},         // right paren
   {"0[xX][0-9a-fA-F]+", TK_HEX}, // hex number
@@ -184,6 +203,32 @@ static bool make_token(char *e) {
   return true;
 }
 
+bool trans_sing() {
+  bool find = false;
+  for (int i = 0; i < nr_token; i++) {
+    if (tokens[i].type == '*') {
+      if ((i == 0)
+      || (tokens[i - 1].type >= TK_DOUBLE_BEGIN && tokens[i - 1].type <= TK_DOUBLE_END)
+      || (tokens[i - 1].type >= TK_SINGLE_BEGIN && tokens[i - 1].type <= TK_SINGLE_END)
+      || (tokens[i - 1].type == TK_RP))
+      {
+        tokens[i].type = TK_SOLV;
+        find = true;
+      }
+    } else if (tokens[i].type == '-') {
+      if ((i == 0)
+      || (tokens[i - 1].type >= TK_DOUBLE_BEGIN && tokens[i - 1].type <= TK_DOUBLE_END)
+      || (tokens[i - 1].type >= TK_SINGLE_BEGIN && tokens[i - 1].type <= TK_SINGLE_END)
+      || (tokens[i - 1].type == TK_RP))
+      {
+        tokens[i].type = TK_NEG;
+        find = true;
+      }
+    }
+  }
+  return find;
+}
+
 bool check_parentheses(int p, int q, bool *bp) {
   // b, p is the edge of expression, bp shows whether the expression is valid or  not
   // bool to record the ret
@@ -221,6 +266,7 @@ bool check_parentheses(int p, int q, bool *bp) {
   else {
     printf("from %d to %d not surounded!\n", p, q);
   }*/
+  
   return parenth;
 }
 
@@ -373,6 +419,15 @@ word_t expr(char *e, bool *success) {
   }
   Log("match succesfully! valid token number: %d", nr_token);
 
+  if (trans_sing()) {
+    Log("Single operation found!");
+  } else {
+    Log("No single operation found.");
+  }
+
+  *success = true;
+  return 0;
+  
   /*
   for (int i = 0; i < nr_token; i++) {
     Log("Token%d Type: %d, Value: %s", i, tokens[i].type, tokens[i].str);
