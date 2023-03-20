@@ -37,9 +37,9 @@ enum {
 
   // Single
   TK_SINGLE_BEGIN,
-  TK_NEG,
-  TK_SOLV,
-  TK_NOT,
+  TK_NEG,   // Negative
+  TK_SOLV,  // Decoding
+  TK_NOT,   // Logic not
   TK_SINGLE_END,
 
   //-------------------KEEP-OPERATIONS-TOGETHER----------
@@ -445,9 +445,6 @@ word_t expr(char *e, bool *success) {
   } else {
     Log("No single operation found.");
   }
-
-  // *success = true;
-  // return 0;
 
   /*
   for (int i = 0; i < nr_token; i++) {
