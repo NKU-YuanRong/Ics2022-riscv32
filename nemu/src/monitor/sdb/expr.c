@@ -513,11 +513,7 @@ word_t expr(char *e, bool *success) {
   }
   // Log("match succesfully! valid token number: %d", nr_token);
 
-  // if (trans_sing()) {
-  //   Log("Single operation found!");
-  // } else {
-  //   Log("No single operation found.");
-  // }
+  trans_sing();
 
   /*
   for (int i = 0; i < nr_token; i++) {
