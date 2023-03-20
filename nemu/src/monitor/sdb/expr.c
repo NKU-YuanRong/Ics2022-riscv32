@@ -263,7 +263,7 @@ uint32_t eval(int p, int q) {
       assert(0);
     }
   }
-  else if (check_parentheses(p, q, &bad_expression) == true) {
+  else if (check_parentheses(p, q, &bad_expression)) {
     /* The expression is surrounded by a matched pair of parentheses.
      * If that is the case, just throw away the parentheses.
      */
@@ -326,6 +326,7 @@ uint32_t eval(int p, int q) {
       }
     }
     // then op contaims the main operation
+    printf("main operation: %d", tokens[op].type);
     
     
     uint32_t val1 = eval(p, op - 1);
