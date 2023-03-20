@@ -100,6 +100,7 @@ char *gen_rand_operation() {
 
 // Generate rand expression
 void gen_rand_expr(char *exp) {
+  /**/
   char num[10];
   switch (rand() % 4) {
     case 0:
@@ -140,6 +141,7 @@ static int cmd_pt(char *args) {
     printf("Token Value: %d\n", val);*/
     char *exp = "";
     // gen_rand_expr(exp);
+    exp = gen_rand_operation();
     printf("%s\n", exp);
   }
   return 0;
