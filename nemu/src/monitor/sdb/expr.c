@@ -210,6 +210,8 @@ bool trans_sing() {
       if ((i == 0)
       || (tokens[i - 1].type >= TK_DOUBLE_BEGIN && tokens[i - 1].type <= TK_DOUBLE_END)
       || (tokens[i - 1].type >= TK_SINGLE_BEGIN && tokens[i - 1].type <= TK_SINGLE_END)
+      || (tokens[i - 1].type == '+' || tokens[i - 1].type == '-')
+      || (tokens[i - 1].type == '*' || tokens[i - 1].type == '/')
       || (tokens[i - 1].type == TK_LP))
       {
         tokens[i].type = TK_SOLV;
@@ -219,6 +221,8 @@ bool trans_sing() {
       if ((i == 0)
       || (tokens[i - 1].type >= TK_DOUBLE_BEGIN && tokens[i - 1].type <= TK_DOUBLE_END)
       || (tokens[i - 1].type >= TK_SINGLE_BEGIN && tokens[i - 1].type <= TK_SINGLE_END)
+      || (tokens[i - 1].type == '+' || tokens[i - 1].type == '-')
+      || (tokens[i - 1].type == '*' || tokens[i - 1].type == '/')
       || (tokens[i - 1].type == TK_LP))
       {
         tokens[i].type = TK_NEG;
