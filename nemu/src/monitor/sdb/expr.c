@@ -291,7 +291,7 @@ uint32_t eval(int p, int q) {
         || tokens[i].type == TK_MT)
       {
         // Ignore operations in parens
-        if (stack) {
+        if (stack != 0) {
           continue;
         }
 
@@ -321,8 +321,10 @@ uint32_t eval(int p, int q) {
         }
       } else if (tokens[i].type == TK_LP) {
         stack += 1;
+        printf("Stack plus: %d", stack);
       } else if (tokens[i].type == TK_RP) {
         stack -= 1;
+        printf("Stack minus: %d", stack);
       }
     }
     assert(op > 0);
