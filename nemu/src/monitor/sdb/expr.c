@@ -60,7 +60,7 @@ static struct rule {
   {"<", TK_LT},         // less than
   {">", TK_MT},         // more than
   {"&&", TK_LAND},      // logic and
-  {"||", TK_LOR},       // logic or
+  {"\\|\\|", TK_LOR},       // logic or
   {"\\(", TK_LP},         // left paren
   {"\\)", TK_RP},         // right paren
   {"0[xX][0-9a-fA-F]+", TK_HEX}, // hex number
