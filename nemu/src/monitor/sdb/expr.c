@@ -87,7 +87,7 @@ typedef struct token {
   char str[32];
 } Token;
 
-static Token tokens[32] __attribute__((used)) = {};
+static Token tokens[64] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 
 static bool make_token(char *e) {
@@ -296,7 +296,6 @@ uint32_t eval(int p, int q) {
         || tokens[i].type == TK_MT)
       {
         // Ignore operations in parens
-        printf("Is operation\n");
         if (stack != 0) {
           continue;
         }
