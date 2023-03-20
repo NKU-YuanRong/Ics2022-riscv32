@@ -103,7 +103,7 @@ static struct rule {
   {"[0-9]+", TK_DEC},   // dec number
 
   // Registers
-  {"$0", TK_$0}, {"$ra", TK_ra}, {"$sp", TK_sp}, {"$gp", TK_gp},
+  {"\\$0", TK_$0}, {"$ra", TK_ra}, {"$sp", TK_sp}, {"$gp", TK_gp},
   {"$tp", TK_tp}, {"$t0", TK_t0}, {"$t1", TK_t1}, {"$t2", TK_t2},
   {"$s0", TK_s0},
 };
