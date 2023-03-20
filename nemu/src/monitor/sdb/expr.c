@@ -177,6 +177,91 @@ static bool make_token(char *e) {
   return true;
 }
 
+bool check_parentheses(int p, int q, bool *bp) {
+  *bp = false;
+  return false;
+}
+
+uint32_t eval(int p, int q) {
+  bool bad_expression = false;
+  if (p > q) {
+    /* Bad expression */
+    Log("Bad expression, p: %d, q: %d", p, q);
+    assert(0);
+  }
+  else if (p == q) {
+    /* Single token.
+     * For now this token should be a number.
+     * Return the value of the number.
+     */
+    if (tokens[p].type == TK_DEC) {
+      // Translate decimal to uint
+      uint32_t val = 0;
+      for (int i = 0; i < strlen(tokens[p].str); i++) {
+        if (tokens[p].str[i] >= '0' && tokens[p].str[i] <= '9') {
+          val *= 10;
+          val += (int)(tokens[p].str[i] - '0');
+        } else {
+          Log("Wrong decimal input in pos: %d, str: %s", p, tokens[p].str);
+          assert(0);
+        }
+      }
+      Log("Decimal str: %s, value: %d", tokens[p].str, val);
+      return val;
+    } else if (tokens[p].type == TK_HEX) {
+      // translate heximal to uint
+      uint32_t val = 0;
+      // remember to ignore "0x"
+      for (int i = 2; i < strlen(tokens[p].str); i++) {
+        if (tokens[p].str[i] >= '0' && tokens[p].str[i] <= '9') {
+          val *= 16;
+          val += (int)(tokens[p].str[i] - '0');
+        } else if (tokens[p].str[i] >= 'a' && tokens[p].str[i] <= 'f') {
+          val *= 16;
+          val += (int)(tokens[p].str[i] - 'a' + 10);
+        } else if (tokens[p].str[i] >= 'A' && tokens[p].str[i] <= 'F') {
+          val *= 16;
+          val += (int)(tokens[p].str[i] - 'A' + 10);
+        } else {
+          Log("Wrong heximal input in pos: %d, str: %s", p, tokens[p].str);
+          assert(0);
+        }
+      }
+      Log("Heximal str: %s, value: %d", tokens[p].str, val);
+      return val;
+    } else {
+      Log("Wrong token type in pos: %d", p);
+      assert(0);
+    }
+  }
+  else if (check_parentheses(p, q, &bad_expression) == true) {
+    /* The expression is surrounded by a matched pair of parentheses.
+     * If that is the case, just throw away the parentheses.
+     */
+    if (bad_expression) {
+      Log("Bad expression, p: %d, q: %d", p, q);
+      assert(0);
+    }
+    return eval(p + 1, q - 1);
+  }
+  else {
+    // op = the position of 主运算符 in the token expression;
+    /*
+    uint32_t val1 = eval(p, op - 1);
+    uint32_t val2 = eval(op + 1, q);
+
+    switch (op_type) {
+      case '+': return val1 + val2;
+      case '-': return val1 - val2;
+      case '*': return val1 * val2;
+      case '/': return val1 / val2;
+      default: assert(0);
+    }*/
+    return 0;
+  }
+  Log("Bad control stream at eval");
+  assert(0);
+}
 
 word_t expr(char *e, bool *success) {
   if (!make_token(e)) {
@@ -189,10 +274,8 @@ word_t expr(char *e, bool *success) {
     printf("Token%d-Type:-%d,-Value:-%s\n", i, tokens[i].type, tokens[i].str);
   }
 
-  return 1;
-
   /* TODO: Insert codes to evaluate the expression. */
-  TODO();
+  
 
   return 0;
 }

@@ -226,7 +226,7 @@ static int cmd_x(char *args) {
       // exp_value = str2u64t(expr);
       bool suc;
       exp_value = expr(exp, &suc);
-      assert(suc == true);
+      assert(suc);
       int i;
       for (i = 0; i < N; i++) {
         printf("0x%08x: ", (uint32_t)exp_value);
