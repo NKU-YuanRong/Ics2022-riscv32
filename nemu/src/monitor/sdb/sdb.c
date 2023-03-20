@@ -185,7 +185,7 @@ static int cmd_si(char *args) {
   }
 
   // N to record the specific value of the first argument
-  uint64_t N = 0;
+  uint32_t N = 0;
 
   // ignore useless arguments
   args = strtok(args, " ");
