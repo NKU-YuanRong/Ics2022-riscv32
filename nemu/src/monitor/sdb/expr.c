@@ -482,7 +482,7 @@ uint32_t eval(int p, int q) {
     }
     assert(op > 0);
     // then op contaims the main operation
-    printf("main operation: %d\n", tokens[op].type);
+    // printf("main operation: %d\n", tokens[op].type);
     
     
     uint32_t val1 = eval(p, op - 1);
