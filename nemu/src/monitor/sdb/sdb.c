@@ -84,6 +84,67 @@ static int cmd_p(char *args) {
   return 0;
 }
 
+// Generate rand operation
+char *gen_rand_operation() {
+  switch (rand() % 4) {
+    case 0:
+      return "+";
+    case 1:
+      return "-";
+    case 2:
+      return "*";
+    default:
+      return "/";
+  }
+}
+
+// Generate rand expression
+void gen_rand_expr(char *exp) {
+  char num[10];
+  switch (rand() % 4) {
+    case 0:
+      snprintf(num, strlen(num), "%d", rand());
+      strcat(exp, num);
+      return;
+    case 1:
+      snprintf(num, strlen(num), "%x", rand());
+      char *num2 = "0x";
+      strcat(exp, num2);
+      strcat(exp, num);
+      return;
+    case 2:
+      strcat(exp, "(");
+      gen_rand_expr(exp);
+      strcat(exp, ")");
+      return;
+    default:
+      gen_rand_expr(exp);
+      strcat(exp, gen_rand_operation());
+      gen_rand_expr(exp);
+      return;
+  }
+}
+
+// Test cmd_p
+static int cmd_pt(char *args) {
+  // bool suc = false;
+  args = strtok(args, " ");
+  uint64_t NUM = str2u64t(args);
+  srand(13527);
+  while (NUM-- > 0) {
+    /*
+    uint32_t val = expr(gen_rand_expr(), &suc);
+    if (!suc) {
+      Log(ANSI_FMT("Solve fail!", ANSI_FG_RED));
+    }
+    printf("Token Value: %d\n", val);*/
+    char *exp = "";
+    gen_rand_expr(exp);
+    printf("%s\n", exp);
+  }
+  return 0;
+}
+
 // struct set for info command
 static struct {
   const char *arg;
@@ -110,7 +171,7 @@ static struct {
   { "p", "Solve an expression", cmd_p },
 
   // test instructions
-
+  { "pt", "Test Instruction p", cmd_pt },
 };
 
 #define NR_CMD ARRLEN(cmd_table)
