@@ -253,6 +253,7 @@ static int cmd_p(char *args) {
 
 // record length of expression 
 int exp_len = 0;
+// max token number(in expr.c) is 64, so max expression length is 63
 const int max_exp_len = 63;
 
 // Generate rand operation

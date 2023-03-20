@@ -23,6 +23,7 @@
 enum {
   TK_NOTYPE = 256,
   TK_EQ,
+  TK_NE,
   TK_LE,
   TK_ME,
   TK_LT,
@@ -31,6 +32,8 @@ enum {
   TK_RP,
   TK_HEX,
   TK_DEC,
+  TK_LAND,
+  TK_LOR,
 
   /* TODO: Add more token types */
 
@@ -51,10 +54,13 @@ static struct rule {
   {"\\*", '*'},         // nulti
   {"/", '/'},           // devide
   {"==", TK_EQ},        // equal
+  {"!=", TK_NE},        // not equal
   {"<=", TK_LE},        // less equal
   {">=", TK_ME},        // more equal
   {"<", TK_LT},         // less than
   {">", TK_MT},         // more than
+  {"&&", TK_LAND},      // logic and
+  {"||", TK_LOR},       // logic or
   {"\\(", TK_LP},         // left paren
   {"\\)", TK_RP},         // right paren
   {"0[xX][0-9a-fA-F]+", TK_HEX}, // hex number
@@ -87,6 +93,7 @@ typedef struct token {
   char str[32];
 } Token;
 
+// max token number is 64
 static Token tokens[64] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 
