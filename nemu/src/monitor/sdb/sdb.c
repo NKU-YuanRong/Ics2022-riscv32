@@ -143,9 +143,11 @@ static int cmd_pt(char *args) {
       Log(ANSI_FMT("Solve fail!", ANSI_FG_RED));
     }
     printf("Token Value: %d\n", val);*/
-    char *exp = "";
+    char exp[200] = "";
     // gen_rand_expr(exp);
-    gen_rand_operation(exp);
+    // gen_rand_operation(exp);
+    const char *test = "+";
+    strcat(exp, test);
     printf("%s\n", exp);
   }
   return 0;
