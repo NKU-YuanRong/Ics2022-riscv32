@@ -19,6 +19,8 @@
 #include <readline/history.h>
 #include "sdb.h"
 
+#include <time.h>
+
 static int is_batch_mode = false;
 
 void init_regex();
@@ -319,7 +321,8 @@ static int cmd_pt(char *args) {
   }
   MNUM = NUM;
   char exp[300] = "";
-  srand(13527);
+  time_t t;
+  srand((unsigned) time(&t));
   while (NUM-- > 0) {
     exp[0] = '\0';
     exp_len = 0;

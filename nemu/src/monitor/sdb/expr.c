@@ -207,12 +207,13 @@ bool check_parentheses(int p, int q, bool *bp) {
   // legal expression
   *bp = false;
 
+  /*
   if (parenth) {
     printf("from %d to %d surounded!\n", p, q);
   }
   else {
     printf("from %d to %d not surounded!\n", p, q);
-  }
+  }*/
   return parenth;
 }
 
@@ -240,7 +241,7 @@ uint32_t eval(int p, int q) {
           assert(0);
         }
       }
-      Log("Decimal str: %s, value: %d", tokens[p].str, val);
+      // Log("Decimal str: %s, value: %d", tokens[p].str, val);
       return val;
     } else if (tokens[p].type == TK_HEX) {
       // translate heximal to uint
@@ -261,7 +262,7 @@ uint32_t eval(int p, int q) {
           assert(0);
         }
       }
-      Log("Heximal str: %s, value: %d", tokens[p].str, val);
+      // Log("Heximal str: %s, value: %d", tokens[p].str, val);
       return val;
     } else {
       Log("Wrong token type in pos: %d", p);
@@ -326,10 +327,10 @@ uint32_t eval(int p, int q) {
         }
       } else if (tokens[i].type == TK_LP) {
         stack += 1;
-        printf("Stack plus: %d\n", stack);
+        // printf("Stack plus: %d\n", stack);
       } else if (tokens[i].type == TK_RP) {
         stack -= 1;
-        printf("Stack minus: %d\n", stack);
+        // printf("Stack minus: %d\n", stack);
       }
     }
     assert(op > 0);
@@ -354,7 +355,7 @@ uint32_t eval(int p, int q) {
     }
     return 0;
   }
-  Log("Bad control stream at eval");
+  Log("Bad control stream at evaluation");
   assert(0);
 }
 
@@ -365,9 +366,10 @@ word_t expr(char *e, bool *success) {
   }
   Log("match succesfully! valid token number: %d", nr_token);
 
+  /*
   for (int i = 0; i < nr_token; i++) {
     Log("Token%d Type: %d, Value: %s", i, tokens[i].type, tokens[i].str);
-  }
+  }*/
 
   /* TODO: Insert codes to evaluate the expression. */
   uint32_t val = 0;
