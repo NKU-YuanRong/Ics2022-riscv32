@@ -28,11 +28,11 @@ typedef struct watchpoint {
 static WP wp_pool[NR_WP] = {};
 static WP *head = NULL, *free_ = NULL;
 
-// get a new free watch point
-WP* new_wp();
+// // get a new free watch point
+// WP* new_wp();
 
-// free the watch point
-void free_wp(WP *wp);
+// // free the watch point
+// void free_wp(int N);
 
 void init_wp_pool() {
   int i;
@@ -71,6 +71,7 @@ bool Insert_to_free_(WP *np) {
   return true;
 }
 
+// get a new free watch point
 WP* new_wp() {
   if (!free_) {
     Log(ANSI_FMT("No free watch point!", ANSI_FG_RED));
@@ -84,22 +85,23 @@ WP* new_wp() {
   return p;
 }
 
-void free_wp(WP *wp) {
+// free the watch point
+void free_wp(int N) {
   if (!head) {
     Log(ANSI_FMT("No head watch point!", ANSI_FG_RED));
     return;
   }
-  if (head == wp) {
+  if (head->NO == N) {
     head = head->next;
-    Insert_to_free_(wp);
-    Log("Free watch point %d", wp->NO);
+    Insert_to_free_(wp_pool + N);
+    Log("Free watch point %d", N);
     return;
   }
   // Find first free node
   WP *p = head;
   WP *q = p->next;
   while (q) {
-    if (q == wp) {
+    if (q->NO == N) {
       p->next = q->next;
       Insert_to_free_(q);
       Log("Free watch point %d", q->NO);

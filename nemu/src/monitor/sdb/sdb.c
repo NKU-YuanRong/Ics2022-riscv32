@@ -34,7 +34,7 @@ typedef struct watchpoint {
 
 } WP;
 WP* new_wp();
-void free_wp(WP *wp);
+void free_wp(int N);
 
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
@@ -69,7 +69,7 @@ static int cmd_q(char *args) {
 
 static int cmd_help(char *args);
 
-uint64_t str2u64t(char *args);
+uint32_t str2u32t(char *args);
 
 // command single executing, use uint32_t
 static int cmd_si(char *args);
@@ -153,7 +153,7 @@ static int cmd_help(char *args) {
 }
 
 
-uint64_t str2u64t(char *args) {
+uint32_t str2u64t(char *args) {
   //just use the first argument, ignore others
   args = strtok(args, " ");
 
@@ -161,13 +161,13 @@ uint64_t str2u64t(char *args) {
     assert(0);
   }
 
-  uint64_t N = 0;
+  uint32_t N = 0;
 
   char *args_ptr = args;
   for (int i = 0; i < strlen(args); i++) {
     if ('0' <= args_ptr[i] && '9' >= args_ptr[i]) {
       N *= 10;
-      N += (uint64_t)(args_ptr[i] - '0');
+      N += (uint32_t)(args_ptr[i] - '0');
     }
     else {
       // invalid input
@@ -191,7 +191,7 @@ static int cmd_si(char *args) {
   args = strtok(args, " ");
 
   // calculating the value of N
-  N = str2u64t(args);
+  N = str2u32t(args);
 
   // printf("Test: N = %lu\n", N);
   // execute N insts
@@ -236,7 +236,7 @@ static int cmd_x(char *args) {
   char *exp = strtok(NULL, " ");
 
   if (arg != NULL) {
-    N = str2u64t(arg);
+    N = str2u32t(arg);
     if (exp != NULL) {
       bool suc;
       exp_value = expr(exp, &suc);
@@ -279,6 +279,9 @@ static int cmd_w(char *args) {
 }
 
 static int cmd_d(char *args) {
+  args = strtok(args, " ");
+  uint32_t N = str2u32t(args);
+  free_wp(N);
   return 0;
 }
 
@@ -376,7 +379,7 @@ static int cmd_pt(char *args) {
   if (args == NULL) {
     NUM = 100;
   } else {
-    NUM = str2u64t(args);
+    NUM = str2u32t(args);
   }
   MNUM = NUM;
   char exp[500] = "";
