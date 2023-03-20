@@ -284,6 +284,7 @@ static int cmd_w(char *args) {
     WP *p = new_wp();
     p->expr = args;
     p->value = val;
+    Log("Get watch point %d on %s", p->NO, p->expr);
   }
   return 0;
 }
@@ -295,6 +296,7 @@ static int cmd_d(char *args) {
     return 0;
   }
   uint32_t N = str2u32t(args);
+  Log("Free watch point %d", N);
   free_wp(N);
   return 0;
 }

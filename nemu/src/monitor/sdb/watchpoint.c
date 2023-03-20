@@ -83,7 +83,6 @@ WP* new_wp() {
   WP *p = free_;
   free_ = p->next;
   Insert_to_head(p);
-  Log("Get watch point %d", p->NO);
   return p;
 }
 
@@ -106,7 +105,6 @@ void free_wp(int N) {
     if (q->NO == N) {
       p->next = q->next;
       Insert_to_free_(q);
-      Log("Free watch point %d", q->NO);
       return;
     }
     p = q;
