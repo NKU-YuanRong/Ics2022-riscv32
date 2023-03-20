@@ -41,3 +41,16 @@ void init_wp_pool() {
 
 /* TODO: Implement the functionality of watchpoint */
 
+// get a new free watch point
+WP* new_wp() {
+  if (!head) {
+    Log(ANSI_FMT("No free watch point!", ANSI_FG_RED));
+    return NULL;
+  }
+  return NULL;
+}
+
+// free the watch point
+void free_wp(WP *wp) {
+
+}
