@@ -311,12 +311,13 @@ static int cmd_pt(char *args) {
   bool suc = false;
   uint32_t val;
   args = strtok(args, " ");
-  uint64_t NUM = 50;
+  uint64_t NUM, MNUM;
   if (args == NULL) {
     NUM = 50;
   } else {
     NUM = str2u64t(args);
   }
+  MNUM = NUM;
   srand(13527);
   while (NUM-- > 0) {
     char exp[300] = "";
@@ -326,9 +327,9 @@ static int cmd_pt(char *args) {
       continue;
     }
     // gen_rand_operation(exp);
-    printf("%ld Expression: %s, length: %d\n", 50 - NUM, exp, exp_len);
+    printf("%ld Expression: %s, length: %d\n", MNUM - NUM, exp, exp_len);
     val = expr(exp, &suc);
-    printf("%ld Token Value: %d\n", 50- NUM, val);
+    printf("%ld Token Value: %d\n", MNUM - NUM, val);
   }
   return 0;
 }
