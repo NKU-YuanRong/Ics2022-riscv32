@@ -70,6 +70,7 @@ enum {
   TK_s0, TK_s1, TK_a0, TK_a1, TK_a2, TK_a3, TK_a4, TK_a5,
   TK_a6, TK_a7, TK_s2, TK_s3, TK_s4, TK_s5, TK_s6, TK_s7,
   TK_s8, TK_s9, TK_s10, TK_s11, TK_t3, TK_t4, TK_t5, TK_t6,
+  TK_pc,
   TK_REG_END,
 
   /* TODO: Add more token types */
@@ -122,6 +123,7 @@ static struct rule {
   {"\\$s4", TK_s4}, {"\\$s5", TK_s5}, {"\\$s6", TK_s6}, {"\\$s7", TK_s7},
   {"\\$s8", TK_s8}, {"\\$s9", TK_s9}, {"\\$s10", TK_s10}, {"\\$s11", TK_s11},
   {"\\$t3", TK_t3}, {"\\$t4", TK_t4}, {"\\$t5", TK_t5}, {"\\$t6", TK_t6},
+  {"\\$pc", TK_pc}, 
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -197,6 +199,7 @@ static bool make_token(char *e) {
           case TK_s0: case TK_s1: case TK_a0: case TK_a1: case TK_a2: case TK_a3: case TK_a4: case TK_a5:
           case TK_a6: case TK_a7: case TK_s2: case TK_s3: case TK_s4: case TK_s5: case TK_s6: case TK_s7:
           case TK_s8: case TK_s9: case TK_s10: case TK_s11: case TK_t3: case TK_t4: case TK_t5: case TK_t6:
+          case TK_pc:
             tokens[nr_token].type = rules[i].token_type;
             nr_token++;
             break;
@@ -375,15 +378,21 @@ uint32_t eval(int p, int q) {
       // Log("Heximal str: %s, value: %d", tokens[p].str, val);
       return val;
     } else if (tokens[p].type >= TK_REG_BEGIN && tokens[p].type <= TK_REG_END) {
-      // find register index
-      uint32_t reg_index = 0;
-      reg_index = tokens[p].type - TK_$0;
-      assert(reg_index >= 0);
-      assert(reg_index <= 31);
-
-      // get register value
+      // register index and value
+      uint32_t reg_index = 0, reg_value = 0;
       bool suc = false;
-      uint32_t reg_value = isa_reg_str2val(regsters_on_expr[reg_index], &suc);
+
+      // pc and other registers
+      if (tokens[p].type == TK_pc) {
+        reg_value = isa_reg_str2val("pc", &suc);
+      } else {
+        reg_index = tokens[p].type - TK_$0;
+        assert(reg_index >= 0);
+        assert(reg_index <= 31);
+        // get register value
+        reg_value = isa_reg_str2val(regsters_on_expr[reg_index], &suc);
+      }
+
       if (!suc) {
         Log("Wrong register read in pos: %d, reg: %s", p, regsters_on_expr[reg_index]);
         assert(0);
