@@ -209,9 +209,9 @@ static bool make_token(char *e) {
 
 int decode_addr(uint32_t addr) {
   uint32_t value = 0;
-  value += vaddr_read(addr + 3, 1);
-  // printf("%d %d %d %d\n", vaddr_read(exp_value + 3, 1), vaddr_read(exp_value + 2, 1), vaddr_read(exp_value + 1, 1), vaddr_read(exp_value, 1));
-  return 0;
+  value = vaddr_read(addr, 4);
+  // printf("%d\n", vaddr_read(exp_value, 4));
+  return value;
 }
 
 bool trans_sing() {
@@ -357,7 +357,7 @@ uint32_t eval(int p, int q) {
         return -eval(p+1, q);
       case TK_SOLV:
       // TODO
-        return eval(p+1, q);
+        return decode_addr(eval(p+1, q));
       case TK_NOT:
         return !eval(p+1, q);
     }
