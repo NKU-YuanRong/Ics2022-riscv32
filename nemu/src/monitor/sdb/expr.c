@@ -187,10 +187,10 @@ bool check_parentheses(int p, int q, bool *bp) {
 
   // scan every token, ignore non-paren token
   for (int i = p; i <= q; i++) {
-    if (tokens[p].type == TK_LP) {
+    if (tokens[i].type == TK_LP) {
       stack += 1;
     }
-    else if (tokens[p].type == TK_RP) {
+    else if (tokens[i].type == TK_RP) {
       stack -= 1;
     }
     // check the stack
@@ -325,10 +325,10 @@ uint32_t eval(int p, int q) {
         }
       } else if (tokens[i].type == TK_LP) {
         stack += 1;
-        printf("Stack plus: %d", stack);
+        printf("Stack plus: %d\n", stack);
       } else if (tokens[i].type == TK_RP) {
         stack -= 1;
-        printf("Stack minus: %d", stack);
+        printf("Stack minus: %d\n", stack);
       }
     }
     assert(op > 0);
