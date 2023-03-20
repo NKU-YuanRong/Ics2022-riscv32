@@ -26,20 +26,6 @@ static int is_batch_mode = false;
 void init_regex();
 void init_wp_pool();
 
-typedef struct watchpoint {
-  int NO;
-  struct watchpoint *next;
-
-  /* TODO: Add more members if necessary */
-  char *expr;
-  uint32_t value;
-
-} WP;
-
-WP* new_wp();
-void free_wp(int N);
-
-
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
   static char *line_read = NULL;
@@ -271,6 +257,8 @@ static int cmd_p(char *args) {
   return 0;
 }
 
+bool cmd_new_wp(char *args, uint32_t val);
+
 static int cmd_w(char *args) {
   if (args == NULL) {
     Log(ANSI_FMT("Please input a valid expression!", ANSI_FG_RED));
@@ -281,13 +269,14 @@ static int cmd_w(char *args) {
   if (!suc) {
     Log(ANSI_FMT("Solve fail!", ANSI_FG_RED));
   } else {
-    WP *p = new_wp();
-    p->expr = args;
-    p->value = val;
-    Log("Get watch point %d on %s", p->NO, p->expr);
+    if (!cmd_new_wp(args, val)) {
+      Log(ANSI_FMT("Get watch point fail!", ANSI_FG_RED));
+    }
   }
   return 0;
 }
+
+void free_wp(int N);
 
 static int cmd_d(char *args) {
   args = strtok(args, " ");

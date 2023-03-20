@@ -22,7 +22,7 @@ typedef struct watchpoint {
   struct watchpoint *next;
 
   /* TODO: Add more members if necessary */
-  char *expr;
+  char expr[64];
   uint32_t value;
 
 } WP;
@@ -111,4 +111,19 @@ void free_wp(int N) {
   }
   Log(ANSI_FMT("The watch point is free, no need to free it again!", ANSI_FG_RED));
   return;
+}
+
+bool cmd_new_wp(char *args, uint32_t val) {
+  if (!args) {
+    Log(ANSI_FMT("No expression!", ANSI_FG_RED));
+    return false;
+  }
+  WP *p = new_wp();
+  if (p == NULL) {
+    return false;
+  }
+  strcpy(p->expr, args);
+  p->value = val;
+  Log("Get watch point %d on %s", p->NO, p->expr);
+  return true;
 }

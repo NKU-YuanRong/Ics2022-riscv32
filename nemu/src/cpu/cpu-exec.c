@@ -32,6 +32,10 @@ static bool g_print_step = false;
 
 void device_update();
 
+static inline void difftest_watchpoint() {
+  // WP *p = head;
+}
+
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
@@ -39,7 +43,6 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
   IFDEF(CONFIG_WATCHPOINT, difftest_watchpoint());
-  // difftest_watchpoint();
 }
 
 static void exec_once(Decode *s, vaddr_t pc) {
