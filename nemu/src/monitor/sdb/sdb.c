@@ -228,7 +228,7 @@ static int cmd_info(char *args) {
 static int cmd_x(char *args) {
   // N to record the specific value of the first argument
   
-  uint64_t N = 0;
+  uint32_t N = 0;
   uint32_t exp_value = 0;
 
   // arg to store every argument
