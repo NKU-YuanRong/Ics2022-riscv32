@@ -74,85 +74,11 @@ static int info_r() {
 static int cmd_x(char *args);
 
 // Solve expression
-static int cmd_p(char *args) {
-  bool suc = false;
-  uint32_t val = expr(args, &suc);
-  if (!suc) {
-    Log(ANSI_FMT("Solve fail!", ANSI_FG_RED));
-  }
-  printf("Token Value: %d\n", val);
-  return 0;
-}
+static int cmd_p(char *args);
 
-// Generate rand operation
-void gen_rand_operation(char *exp) {
-  switch (rand() % 4) {
-    case 0:
-      strcat(exp, "+");
-      return;
-    case 1:
-      strcat(exp, "-");
-      return;
-    case 2:
-      strcat(exp, "*");
-      return;
-    default:
-      strcat(exp, "+");
-      return;
-  }
-}
+// cmd tp to test cmd_p
+static int cmd_pt(char *args);
 
-// Generate rand expression
-void gen_rand_expr(char *exp) {
-  /**/
-  char num[10];
-  switch (rand() % 4) {
-    case 0:
-      snprintf(num, 10, "%d", rand());
-      strcat(exp, num);
-      return;
-    case 1:
-      snprintf(num, 10, "%x", rand());
-      char *num2 = "0x";
-      strcat(exp, num2);
-      strcat(exp, num);
-      return;
-    case 2:
-      strcat(exp, "(");
-      gen_rand_expr(exp);
-      strcat(exp, ")");
-      return;
-    default:
-      gen_rand_expr(exp);
-      gen_rand_operation(exp);
-      gen_rand_expr(exp);
-      return;
-  }
-}
-
-// Test cmd_p
-static int cmd_pt(char *args) {
-  bool suc = false;
-  uint32_t val;
-  args = strtok(args, " ");
-  uint64_t NUM = str2u64t(args);
-  srand(13527);
-  while (NUM-- > 0) {
-    /*
-    uint32_t val = expr(gen_rand_expr(), &suc);
-    if (!suc) {
-      Log(ANSI_FMT("Solve fail!", ANSI_FG_RED));
-    }
-    printf("Token Value: %d\n", val);*/
-    char exp[200] = "";
-    gen_rand_expr(exp);
-    // gen_rand_operation(exp);
-    printf("Expression: %s\n", exp);
-    val = expr(exp, &suc);
-    printf("Token Value: %d\n", val);
-  }
-  return 0;
-}
 
 // struct set for info command
 static struct {
@@ -312,6 +238,87 @@ static int cmd_x(char *args) {
   
   return 0;
 }
+
+static int cmd_p(char *args) {
+  bool suc = false;
+  uint32_t val = expr(args, &suc);
+  if (!suc) {
+    Log(ANSI_FMT("Solve fail!", ANSI_FG_RED));
+  }
+  printf("Token Value: %d\n", val);
+  return 0;
+}
+
+// Generate rand operation
+void gen_rand_operation(char *exp) {
+  switch (rand() % 4) {
+    case 0:
+      strcat(exp, "+");
+      return;
+    case 1:
+      strcat(exp, "-");
+      return;
+    case 2:
+      strcat(exp, "*");
+      return;
+    default:
+      strcat(exp, "+");
+      return;
+  }
+}
+
+// Generate rand expression
+void gen_rand_expr(char *exp) {
+  /**/
+  char num[10];
+  switch (rand() % 4) {
+    case 0:
+      snprintf(num, 10, "%d", rand());
+      strcat(exp, num);
+      return;
+    case 1:
+      snprintf(num, 10, "%x", rand());
+      char *num2 = "0x";
+      strcat(exp, num2);
+      strcat(exp, num);
+      return;
+    case 2:
+      strcat(exp, "(");
+      gen_rand_expr(exp);
+      strcat(exp, ")");
+      return;
+    default:
+      gen_rand_expr(exp);
+      gen_rand_operation(exp);
+      gen_rand_expr(exp);
+      return;
+  }
+}
+
+// cmd tp to test cmd_p
+static int cmd_pt(char *args) {
+  bool suc = false;
+  uint32_t val;
+  args = strtok(args, " ");
+  uint64_t NUM = str2u64t(args);
+  srand(13527);
+  while (NUM-- > 0) {
+    /*
+    uint32_t val = expr(gen_rand_expr(), &suc);
+    if (!suc) {
+      Log(ANSI_FMT("Solve fail!", ANSI_FG_RED));
+    }
+    printf("Token Value: %d\n", val);*/
+    char exp[200] = "";
+    gen_rand_expr(exp);
+    // gen_rand_operation(exp);
+    printf("Expression: %s\n", exp);
+    val = expr(exp, &suc);
+    printf("Token Value: %d\n", val);
+  }
+  return 0;
+}
+
 
 void sdb_set_batch_mode() {
   is_batch_mode = true;
