@@ -335,7 +335,7 @@ static int cmd_pt(char *args) {
   args = strtok(args, " ");
   uint64_t NUM, MNUM;
   if (args == NULL) {
-    NUM = 50;
+    NUM = 100;
   } else {
     NUM = str2u64t(args);
   }
