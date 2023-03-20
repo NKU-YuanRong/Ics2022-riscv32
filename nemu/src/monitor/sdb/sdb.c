@@ -312,9 +312,9 @@ static int cmd_pt(char *args) {
     char exp[200] = "";
     gen_rand_expr(exp);
     // gen_rand_operation(exp);
-    printf("Expression: %s\n", exp);
+    printf("%ld Expression: %s\n", 100 - NUM, exp);
     val = expr(exp, &suc);
-    printf("Token Value: %d\n", val);
+    printf("%ld Token Value: %d\n", 100- NUM, val);
   }
   return 0;
 }
