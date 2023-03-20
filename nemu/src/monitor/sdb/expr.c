@@ -209,7 +209,7 @@ bool check_parentheses(int p, int q, bool *bp) {
   *bp = false;
 
   if (parenth) {
-    printf("from %d to %d not surounded!\n", p, q);
+    printf("from %d to %d surounded!\n", p, q);
   }
   return parenth;
 }
