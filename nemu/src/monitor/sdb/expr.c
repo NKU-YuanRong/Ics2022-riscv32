@@ -291,6 +291,7 @@ uint32_t eval(int p, int q) {
         || tokens[i].type == TK_MT)
       {
         // Ignore operations in parens
+        printf("Is operation\n");
         if (stack != 0) {
           continue;
         }
