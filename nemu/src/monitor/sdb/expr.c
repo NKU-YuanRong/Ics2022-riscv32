@@ -198,7 +198,7 @@ bool check_parentheses(int p, int q, bool *bp) {
       // right paren with no left paren! bad expression
       *bp = true;
       return false;
-    } else if (stack == 0) {
+    } else if (stack == 0 && i != q) {
       // the whole expression is not surrounded by a couple of paren
       printf("from %d to %d not surounded!\n", p, q);
       parenth = false;
