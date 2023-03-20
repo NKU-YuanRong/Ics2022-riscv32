@@ -153,7 +153,7 @@ static int cmd_help(char *args) {
 }
 
 
-uint32_t str2u64t(char *args) {
+uint32_t str2u32t(char *args) {
   //just use the first argument, ignore others
   args = strtok(args, " ");
 
