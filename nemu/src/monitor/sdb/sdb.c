@@ -132,7 +132,8 @@ void gen_rand_expr(char *exp) {
 
 // Test cmd_p
 static int cmd_pt(char *args) {
-  // bool suc = false;
+  bool suc = false;
+  uint32_t val;
   args = strtok(args, " ");
   uint64_t NUM = str2u64t(args);
   srand(13527);
@@ -146,7 +147,9 @@ static int cmd_pt(char *args) {
     char exp[200] = "";
     gen_rand_expr(exp);
     // gen_rand_operation(exp);
-    printf("%s\n", exp);
+    // printf("%s\n", exp);
+    val = expr(exp, &suc);
+    printf("Token Value: %d\n", val);
   }
   return 0;
 }
