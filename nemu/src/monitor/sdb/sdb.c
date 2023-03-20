@@ -81,6 +81,7 @@ static int cmd_p(char *args) {
     Log("Solve fail!");
   }
   printf("Token Value: %d\n", val);
+  Log(ANSI_FMT("ABORT", ANSI_FG_RED));
   return 0;
 }
 
