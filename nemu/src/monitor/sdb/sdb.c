@@ -340,7 +340,7 @@ static int cmd_pt(char *args) {
     NUM = str2u64t(args);
   }
   MNUM = NUM;
-  char exp[500] = "";
+  char exp[1000] = "";
   time_t t;
   srand((unsigned) time(&t));
   while (NUM-- > 0) {
