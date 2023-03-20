@@ -108,11 +108,11 @@ void gen_rand_expr(char *exp) {
   char num[10];
   switch (rand() % 4) {
     case 0:
-      snprintf(num, strlen(num), "%d", rand());
+      snprintf(num, 10, "%d", rand());
       strcat(exp, num);
       return;
     case 1:
-      snprintf(num, strlen(num), "%x", rand());
+      snprintf(num, 10, "%x", rand());
       char *num2 = "0x";
       strcat(exp, num2);
       strcat(exp, num);
