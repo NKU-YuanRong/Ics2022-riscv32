@@ -193,6 +193,10 @@ static bool make_token(char *e) {
           case '-':
           case '*':
           case '/':
+          case TK_$0: case TK_ra: case TK_sp: case TK_gp: case TK_tp: case TK_t0: case TK_t1: case TK_t2:
+          case TK_s0: case TK_s1: case TK_a0: case TK_a1: case TK_a2: case TK_a3: case TK_a4: case TK_a5:
+          case TK_a6: case TK_a7: case TK_s2: case TK_s3: case TK_s4: case TK_s5: case TK_s6: case TK_s7:
+          case TK_s8: case TK_s9: case TK_s10: case TK_s11: case TK_t3: case TK_t4: case TK_t5: case TK_t6:
             tokens[nr_token].type = rules[i].token_type;
             nr_token++;
             break;
