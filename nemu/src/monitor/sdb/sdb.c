@@ -80,7 +80,7 @@ static int cmd_p(char *args) {
   if (!suc) {
     Log("Solve fail!");
   }
-  printf("Value: %d", val);
+  printf("Token Value: %d\n", val);
   return 0;
 }
 
