@@ -310,16 +310,10 @@ void gen_rand_expr(char *exp) {
   char num[10];
   switch (rand() % 5) {
     case 0:
-      snprintf(num, 10, "%d", rand());
-      strcat(exp, num);
-      exp_len++;
-      return;
     case 1:
-      snprintf(num, 10, "%x", rand());
-      char *num2 = "0x";
-      strcat(exp, num2);
-      strcat(exp, num);
-      exp_len++;
+      gen_rand_expr(exp);
+      gen_rand_operation(exp);
+      gen_rand_expr(exp);
       return;
     case 2:
       strcat(exp, "(");
@@ -328,10 +322,17 @@ void gen_rand_expr(char *exp) {
       strcat(exp, ")");
       exp_len++;
       return;
-    default:
-      gen_rand_expr(exp);
-      gen_rand_operation(exp);
-      gen_rand_expr(exp);
+    case 3:
+      snprintf(num, 10, "%x", rand());
+      char *num2 = "0x";
+      strcat(exp, num2);
+      strcat(exp, num);
+      exp_len++;
+      return;
+    case 4:
+      snprintf(num, 10, "%d", rand());
+      strcat(exp, num);
+      exp_len++;
       return;
   }
 }
