@@ -229,7 +229,7 @@ static int cmd_x(char *args) {
       for (i = 0; i < N; i++) {
         printf("0x%08x: ", (uint32_t)exp_value);
         printf("%02x %02x %02x %02x\n", vaddr_read(exp_value + 3, 1), vaddr_read(exp_value + 2, 1), vaddr_read(exp_value + 1, 1), vaddr_read(exp_value, 1));
-        // printf("%d %d %d %d\n", vaddr_read(exp_value + 3, 1), vaddr_read(exp_value + 2, 1), vaddr_read(exp_value + 1, 1), vaddr_read(exp_value, 1));
+        printf("%d %d %d %d\n", vaddr_read(exp_value + 3, 1), vaddr_read(exp_value + 2, 1), vaddr_read(exp_value + 1, 1), vaddr_read(exp_value, 1));
         printf("%d\n", vaddr_read(exp_value, 4));
         exp_value += 4;
       }
