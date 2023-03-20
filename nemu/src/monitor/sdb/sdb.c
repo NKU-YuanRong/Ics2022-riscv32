@@ -145,9 +145,7 @@ static int cmd_pt(char *args) {
     printf("Token Value: %d\n", val);*/
     char exp[200] = "";
     // gen_rand_expr(exp);
-    // gen_rand_operation(exp);
-    const char *test = "+";
-    strcat(exp, test);
+    gen_rand_operation(exp);
     printf("%s\n", exp);
   }
   return 0;
