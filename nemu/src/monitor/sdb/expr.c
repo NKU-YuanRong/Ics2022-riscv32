@@ -20,6 +20,9 @@
  */
 #include <regex.h>
 
+// Just declare before use
+word_t vaddr_read(vaddr_t addr, int len);
+
 enum {
   TK_NOTYPE = 256,
 
@@ -202,6 +205,13 @@ static bool make_token(char *e) {
   }
 
   return true;
+}
+
+int decode_addr(uint32_t addr) {
+  uint32_t value = 0;
+  value += vaddr_read(addr + 3, 1);
+  // printf("%d %d %d %d\n", vaddr_read(exp_value + 3, 1), vaddr_read(exp_value + 2, 1), vaddr_read(exp_value + 1, 1), vaddr_read(exp_value, 1));
+  return 0;
 }
 
 bool trans_sing() {
