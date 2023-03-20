@@ -85,16 +85,20 @@ static int cmd_p(char *args) {
 }
 
 // Generate rand operation
-char *gen_rand_operation() {
+void gen_rand_operation(char *exp) {
   switch (rand() % 4) {
     case 0:
-      return "+";
+      strcat(exp, "+");
+      return;
     case 1:
-      return "-";
+      strcat(exp, "-");
+      return;
     case 2:
-      return "*";
+      strcat(exp, "*");
+      return;
     default:
-      return "/";
+      strcat(exp, "+");
+      return;
   }
 }
 
@@ -120,7 +124,7 @@ void gen_rand_expr(char *exp) {
       return;
     default:
       gen_rand_expr(exp);
-      strcat(exp, gen_rand_operation());
+      gen_rand_operation(exp);
       gen_rand_expr(exp);
       return;
   }
@@ -141,7 +145,7 @@ static int cmd_pt(char *args) {
     printf("Token Value: %d\n", val);*/
     char *exp = "";
     // gen_rand_expr(exp);
-    exp = gen_rand_operation();
+    // gen_rand_operation(exp);
     printf("%s\n", exp);
   }
   return 0;
