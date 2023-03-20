@@ -308,7 +308,7 @@ void gen_rand_expr(char *exp) {
     return;
   }
   char num[10];
-  switch (rand() % (exp_len > 5 ? exp_len: 5)) {
+  switch (rand() % (exp_len < 5 ? exp_len: 5)) {
     case 0:
     case 1:
       gen_rand_expr(exp);
