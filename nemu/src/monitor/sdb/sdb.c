@@ -308,12 +308,7 @@ void gen_rand_expr(char *exp) {
     return;
   }
   char num[10];
-  // uint32_t switch_num = (2 + exp_len < 5 ? 2 + exp_len: 5);
-  uint32_t switch_num = 5;
-  if (2 + exp_len < 5) {
-    switch_num = exp_len + 2;
-  }
-  switch (rand() % switch_num) {
+  switch (rand() % 5) {
     case 0:
     case 1:
       gen_rand_expr(exp);
