@@ -127,3 +127,20 @@ bool cmd_new_wp(char *args, uint32_t val) {
   Log("Get watch point %d on %s", p->NO, p->expr);
   return true;
 }
+
+bool difftest_watchpoint() {
+  WP *p = head;
+  bool suc, ex_stop = false;
+  uint32_t val;
+  while (p) {
+    suc = false;
+    val = expr(p->expr, &suc);
+    assert(suc);
+    if (val != p->value) {
+      Log("Watch point %d is triggered, expr: %s", p->NO, p->expr);
+      ex_stop = true;
+    }
+    p = p->next;
+  }
+  return ex_stop;
+}
