@@ -300,7 +300,7 @@ void gen_rand_operation(char *exp) {
 void gen_rand_expr(char *exp) {
   /**/
   char num[10];
-  switch (rand() % 5) {
+  switch (rand() % 4) {
     case 0:
       snprintf(num, 10, "%d", rand());
       strcat(exp, num);
