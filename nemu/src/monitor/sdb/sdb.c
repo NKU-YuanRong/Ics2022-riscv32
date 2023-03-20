@@ -256,6 +256,9 @@ int exp_len = 0;
 
 // Generate rand operation
 void gen_rand_operation(char *exp) {
+  if (exp_len > 30) {
+    return;
+  }
   switch (rand() % 9) {
     case 0:
       strcat(exp, "+");
@@ -298,7 +301,9 @@ void gen_rand_operation(char *exp) {
 
 // Generate rand expression
 void gen_rand_expr(char *exp) {
-  /**/
+  if (exp_len > 30) {
+    return;
+  }
   char num[10];
   switch (rand() % 5) {
     case 0:
@@ -340,7 +345,7 @@ static int cmd_pt(char *args) {
     NUM = str2u64t(args);
   }
   MNUM = NUM;
-  char exp[1000] = "";
+  char exp[500] = "";
   time_t t;
   srand((unsigned) time(&t));
   while (NUM-- > 0) {
