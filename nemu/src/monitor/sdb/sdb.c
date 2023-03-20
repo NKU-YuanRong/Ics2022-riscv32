@@ -19,13 +19,13 @@
 #include <readline/history.h>
 #include "sdb.h"
 
+#include <time.h>
+
 static int is_batch_mode = false;
 
 void init_regex();
 void init_wp_pool();
 
-// Just declare before use
-word_t vaddr_read(vaddr_t addr, int len);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -75,6 +75,13 @@ static int info_r() {
 // command scan the memory
 static int cmd_x(char *args);
 
+// Solve expression
+static int cmd_p(char *args);
+
+// cmd tp to test cmd_p
+static int cmd_pt(char *args);
+
+
 // struct set for info command
 static struct {
   const char *arg;
@@ -98,7 +105,10 @@ static struct {
   { "si", "Execute sigle instruction", cmd_si },
   { "info", "Show program status", cmd_info },
   { "x", "Scan a storage area", cmd_x },
+  { "p", "Solve an expression", cmd_p },
 
+  // test instructions
+  { "pt", "Test Instruction p", cmd_pt },
 };
 
 #define NR_CMD ARRLEN(cmd_table)
@@ -207,12 +217,15 @@ static int cmd_x(char *args) {
 
   // arg to store every argument
   char *arg = strtok(args, " ");
-  char *expr = strtok(NULL, " ");
+  char *exp = strtok(NULL, " ");
 
   if (arg != NULL) {
     N = str2u64t(arg);
-    if (expr != NULL) {
-      exp_value = str2u64t(expr);
+    if (exp != NULL) {
+      // exp_value = str2u64t(expr);
+      bool suc;
+      exp_value = expr(exp, &suc);
+      assert(suc);
       int i;
       for (i = 0; i < N; i++) {
         printf("0x%08x: ", (uint32_t)exp_value);
@@ -227,6 +240,104 @@ static int cmd_x(char *args) {
   
   return 0;
 }
+
+static int cmd_p(char *args) {
+  bool suc = false;
+  uint32_t val = expr(args, &suc);
+  if (!suc) {
+    Log(ANSI_FMT("Solve fail!", ANSI_FG_RED));
+  }
+  printf("Token Value: %d\n", val);
+  return 0;
+}
+
+// record length of expression 
+int exp_len = 0;
+
+// Generate rand operation
+void gen_rand_operation(char *exp) {
+  switch (rand() % 4) {
+    case 0:
+      strcat(exp, "+");
+      exp_len++;
+      return;
+    case 1:
+      strcat(exp, "-");
+      exp_len++;
+      return;
+    case 2:
+      strcat(exp, "*");
+      exp_len++;
+      return;
+    default:
+      strcat(exp, "+");
+      exp_len++;
+      return;
+  }
+}
+
+// Generate rand expression
+void gen_rand_expr(char *exp) {
+  /**/
+  char num[10];
+  switch (rand() % 4) {
+    case 0:
+      snprintf(num, 10, "%d", rand());
+      strcat(exp, num);
+      exp_len++;
+      return;
+    case 1:
+      snprintf(num, 10, "%x", rand());
+      char *num2 = "0x";
+      strcat(exp, num2);
+      strcat(exp, num);
+      exp_len++;
+      return;
+    case 2:
+      strcat(exp, "(");
+      exp_len++;
+      gen_rand_expr(exp);
+      strcat(exp, ")");
+      exp_len++;
+      return;
+    default:
+      gen_rand_expr(exp);
+      gen_rand_operation(exp);
+      gen_rand_expr(exp);
+      return;
+  }
+}
+
+// cmd tp to test cmd_p
+static int cmd_pt(char *args) {
+  bool suc = false;
+  uint32_t val;
+  args = strtok(args, " ");
+  uint64_t NUM, MNUM;
+  if (args == NULL) {
+    NUM = 50;
+  } else {
+    NUM = str2u64t(args);
+  }
+  MNUM = NUM;
+  char exp[300] = "";
+  time_t t;
+  srand((unsigned) time(&t));
+  while (NUM-- > 0) {
+    exp[0] = '\0';
+    exp_len = 0;
+    gen_rand_expr(exp);
+    if (exp_len > 30) {
+      continue;
+    }
+    // gen_rand_operation(exp);
+    printf("%ld Expression: %s, length: %d\n", MNUM - NUM, exp, exp_len);
+    val = expr(exp, &suc);
+    printf("%ld Token Value: %d\n", MNUM - NUM, val);
+  }
+  return 0;
+}
+
 
 void sdb_set_batch_mode() {
   is_batch_mode = true;

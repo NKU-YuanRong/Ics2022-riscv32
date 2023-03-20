@@ -21,7 +21,16 @@
 #include <regex.h>
 
 enum {
-  TK_NOTYPE = 256, TK_EQ,
+  TK_NOTYPE = 256,
+  TK_EQ,
+  TK_LE,
+  TK_ME,
+  TK_LT,
+  TK_MT,
+  TK_LP,
+  TK_RP,
+  TK_HEX,
+  TK_DEC,
 
   /* TODO: Add more token types */
 
@@ -38,7 +47,18 @@ static struct rule {
 
   {" +", TK_NOTYPE},    // spaces
   {"\\+", '+'},         // plus
+  {"-", '-'},           // minus
+  {"\\*", '*'},         // nulti
+  {"/", '/'},           // devide
   {"==", TK_EQ},        // equal
+  {"<=", TK_LE},        // less equal
+  {">=", TK_ME},        // more equal
+  {"<", TK_LT},         // less than
+  {">", TK_MT},         // more than
+  {"\\(", TK_LP},         // left paren
+  {"\\)", TK_RP},         // right paren
+  {"0[xX][0-9a-fA-F]+", TK_HEX}, // hex number
+  {"[0-9]+", TK_DEC},   // dec number
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -95,7 +115,53 @@ static bool make_token(char *e) {
          */
 
         switch (rules[i].token_type) {
-          default: TODO();
+          case TK_NOTYPE:
+            break;
+          case TK_EQ:
+          case TK_LE:
+          case TK_ME:
+          case TK_LT:
+          case TK_MT:
+          case TK_LP:
+          case TK_RP:
+          case '+':
+          case '-':
+          case '*':
+          case '/':
+            tokens[nr_token].type = rules[i].token_type;
+            nr_token++;
+            break;
+          case TK_HEX:
+            tokens[nr_token].type = rules[i].token_type;
+            if (substr_len <= 31) {
+              int i;
+              for (i = 0; i < substr_len; i++) {
+                tokens[nr_token].str[i] = e[position - substr_len + i];
+              }
+              tokens[nr_token].str[i] = '\0';
+            }
+            else {
+              printf("Token string is loger than 32!\n");
+            }
+            nr_token++;
+            break;
+          case TK_DEC:
+            tokens[nr_token].type = rules[i].token_type;
+            if (substr_len <= 31) {
+              int i;
+              for (i = 0; i < substr_len; i++) {
+                tokens[nr_token].str[i] = e[position - substr_len + i];
+              }
+              tokens[nr_token].str[i] = '\0';
+            }
+            else {
+              printf("Token string is loger than 32!\n");
+            }
+            nr_token++;
+            break;
+          default:
+            Log("Wrong token type!");
+            assert(0);
         }
 
         break;
@@ -111,15 +177,204 @@ static bool make_token(char *e) {
   return true;
 }
 
+bool check_parentheses(int p, int q, bool *bp) {
+  // b, p is the edge of expression, bp shows whether the expression is valid or  not
+  // bool to record the ret
+  bool parenth = true;
+
+  // stack to record paren match
+  int stack = 0;
+
+  // scan every token, ignore non-paren token
+  for (int i = p; i <= q; i++) {
+    if (tokens[i].type == TK_LP) {
+      stack += 1;
+    }
+    else if (tokens[i].type == TK_RP) {
+      stack -= 1;
+    }
+    // check the stack
+    if (stack < 0) {
+      // right paren with no left paren! bad expression
+      *bp = true;
+      return false;
+    } else if (stack == 0 && i != q) {
+      // the whole expression is not surrounded by a couple of paren
+      parenth = false;
+    }
+  }
+
+  // legal expression
+  *bp = false;
+
+  /*
+  if (parenth) {
+    printf("from %d to %d surounded!\n", p, q);
+  }
+  else {
+    printf("from %d to %d not surounded!\n", p, q);
+  }*/
+  return parenth;
+}
+
+uint32_t eval(int p, int q) {
+  bool bad_expression = false;
+  if (p > q) {
+    /* Bad expression */
+    Log("Bad expression, p: %d, q: %d", p, q);
+    assert(0);
+  }
+  else if (p == q) {
+    /* Single token.
+     * For now this token should be a number.
+     * Return the value of the number.
+     */
+    if (tokens[p].type == TK_DEC) {
+      // Translate decimal to uint
+      uint32_t val = 0;
+      for (int i = 0; i < strlen(tokens[p].str); i++) {
+        if (tokens[p].str[i] >= '0' && tokens[p].str[i] <= '9') {
+          val *= 10;
+          val += (int)(tokens[p].str[i] - '0');
+        } else {
+          Log("Wrong decimal input in pos: %d, str: %s", p, tokens[p].str);
+          assert(0);
+        }
+      }
+      // Log("Decimal str: %s, value: %d", tokens[p].str, val);
+      return val;
+    } else if (tokens[p].type == TK_HEX) {
+      // translate heximal to uint
+      uint32_t val = 0;
+      // remember to ignore "0x"
+      for (int i = 2; i < strlen(tokens[p].str); i++) {
+        if (tokens[p].str[i] >= '0' && tokens[p].str[i] <= '9') {
+          val *= 16;
+          val += (int)(tokens[p].str[i] - '0');
+        } else if (tokens[p].str[i] >= 'a' && tokens[p].str[i] <= 'f') {
+          val *= 16;
+          val += (int)(tokens[p].str[i] - 'a' + 10);
+        } else if (tokens[p].str[i] >= 'A' && tokens[p].str[i] <= 'F') {
+          val *= 16;
+          val += (int)(tokens[p].str[i] - 'A' + 10);
+        } else {
+          Log("Wrong heximal input in pos: %d, str: %s", p, tokens[p].str);
+          assert(0);
+        }
+      }
+      // Log("Heximal str: %s, value: %d", tokens[p].str, val);
+      return val;
+    } else {
+      Log("Wrong token type in pos: %d", p);
+      assert(0);
+    }
+  }
+  else if (check_parentheses(p, q, &bad_expression)) {
+    /* The expression is surrounded by a matched pair of parentheses.
+     * If that is the case, just throw away the parentheses.
+     */
+    if (bad_expression) {
+      Log("Bad expression, p: %d, q: %d", p, q);
+      assert(0);
+    }
+    return eval(p + 1, q - 1);
+  }
+  else {
+    // If it's bad expression, error
+    if (bad_expression) {
+      Log("Bad expression, p: %d, q: %d", p, q);
+      assert(0);
+    }
+
+    // Find main operation
+    int stack = 0; // Ignore operations in parens
+    int op = -1; // main operation
+    for (int i = p; i <= q; i++) {
+      if (tokens[i].type == '+' || tokens[i].type == '-'
+        || tokens[i].type == '*' || tokens[i].type == '/'
+        || tokens[i].type == TK_EQ || tokens[i].type == TK_LE
+        || tokens[i].type == TK_ME || tokens[i].type == TK_LT
+        || tokens[i].type == TK_MT)
+      {
+        // Ignore operations in parens
+        if (stack != 0) {
+          continue;
+        }
+
+        // find main operation
+        if (tokens[i].type == '+' || tokens[i].type == '-') {
+          if (op == -1 || tokens[op].type == '+' || tokens[op].type == '+') {
+            op = i;
+          }
+        } else if (tokens[i].type == '*' || tokens[i].type == '/') {
+          if (op == -1 || tokens[op].type == '+' || tokens[op].type == '+'
+            || tokens[op].type == '*' || tokens[op].type == '/')
+          {
+            op = i;
+          }
+        } else if (tokens[i].type == TK_EQ || tokens[i].type == TK_LE
+          || tokens[i].type == TK_ME || tokens[i].type == TK_LT
+          || tokens[i].type == TK_MT)
+        {
+          if (op == -1 || tokens[op].type == '+' || tokens[op].type == '+'
+            || tokens[op].type == '*' || tokens[op].type == '/'
+            || tokens[op].type == TK_EQ || tokens[op].type == TK_LE
+            || tokens[op].type == TK_ME || tokens[op].type == TK_LT
+            || tokens[op].type == TK_MT)
+          {
+            op = i;
+          }
+        }
+      } else if (tokens[i].type == TK_LP) {
+        stack += 1;
+        // printf("Stack plus: %d\n", stack);
+      } else if (tokens[i].type == TK_RP) {
+        stack -= 1;
+        // printf("Stack minus: %d\n", stack);
+      }
+    }
+    assert(op > 0);
+    // then op contaims the main operation
+    printf("main operation: %d\n", tokens[op].type);
+    
+    
+    uint32_t val1 = eval(p, op - 1);
+    uint32_t val2 = eval(op + 1, q);
+
+    switch (tokens[op].type) {
+      case '+': return val1 + val2;
+      case '-': return val1 - val2;
+      case '*': return val1 * val2;
+      case '/': return val1 / val2;
+      case TK_EQ: return (int)(val1 == val2);
+      case TK_LE: return (int)(val1 <= val2);
+      case TK_ME: return (int)(val1 >= val2);
+      case TK_LT: return (int)(val1 < val2);
+      case TK_MT: return (int)(val1 > val2);
+      default: assert(0);
+    }
+    return 0;
+  }
+  Log("Bad control stream at evaluation");
+  assert(0);
+}
 
 word_t expr(char *e, bool *success) {
   if (!make_token(e)) {
     *success = false;
     return 0;
   }
+  Log("match succesfully! valid token number: %d", nr_token);
+
+  /*
+  for (int i = 0; i < nr_token; i++) {
+    Log("Token%d Type: %d, Value: %s", i, tokens[i].type, tokens[i].str);
+  }*/
 
   /* TODO: Insert codes to evaluate the expression. */
-  TODO();
+  uint32_t val = 0;
+  val = eval(0, nr_token - 1);
+  *success = true;
 
-  return 0;
+  return val;
 }
