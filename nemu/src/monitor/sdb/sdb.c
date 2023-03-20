@@ -300,7 +300,7 @@ void gen_rand_operation(char *exp) {
 void gen_rand_expr(char *exp) {
   /**/
   char num[10];
-  switch (rand() % 4) {
+  switch (rand() % 5) {
     case 0:
       snprintf(num, 10, "%d", rand());
       strcat(exp, num);
@@ -340,7 +340,7 @@ static int cmd_pt(char *args) {
     NUM = str2u64t(args);
   }
   MNUM = NUM;
-  char exp[300] = "";
+  char exp[500] = "";
   time_t t;
   srand((unsigned) time(&t));
   while (NUM-- > 0) {
