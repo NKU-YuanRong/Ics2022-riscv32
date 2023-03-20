@@ -256,7 +256,7 @@ int exp_len = 0;
 
 // Generate rand operation
 void gen_rand_operation(char *exp) {
-  switch (rand() % 4) {
+  switch (rand() % 5) {
     case 0:
       strcat(exp, "+");
       exp_len++;
@@ -269,8 +269,12 @@ void gen_rand_operation(char *exp) {
       strcat(exp, "*");
       exp_len++;
       return;
-    default:
+    case 3:
       strcat(exp, "+");
+      exp_len++;
+      return;
+    case 4:
+      strcat(exp, "==");
       exp_len++;
       return;
   }
