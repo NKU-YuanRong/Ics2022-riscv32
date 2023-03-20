@@ -22,6 +22,14 @@
 
 // Just declare before use
 word_t vaddr_read(vaddr_t addr, int len);
+word_t isa_reg_str2val(const char *s, bool *success);
+
+const char *regs[] = {
+  "$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
+  "s0", "s1", "a0", "a1", "a2", "a3", "a4", "a5",
+  "a6", "a7", "s2", "s3", "s4", "s5", "s6", "s7",
+  "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6"
+};
 
 enum {
   TK_NOTYPE = 256,
@@ -56,10 +64,12 @@ enum {
   TK_DEC,
 
   // Register
+  TK_REG_BEGIN,
   TK_$0, TK_ra, TK_sp, TK_gp, TK_tp, TK_t0, TK_t1, TK_t2,
   TK_s0, TK_s1, TK_a0, TK_a1, TK_a2, TK_a3, TK_a4, TK_a5,
   TK_a6, TK_a7, TK_s2, TK_s3, TK_s4, TK_s5, TK_s6, TK_s7,
   TK_s8, TK_s9, TK_s10, TK_s11, TK_t3, TK_t4, TK_t5, TK_t6,
+  TK_REG_END,
 
   /* TODO: Add more token types */
 
@@ -103,17 +113,15 @@ static struct rule {
   {"[0-9]+", TK_DEC},   // dec number
 
   // Registers
-  {"\\$0", TK_$0}, {"$ra", TK_ra}, {"$sp", TK_sp}, {"$gp", TK_gp},
-  {"$tp", TK_tp}, {"$t0", TK_t0}, {"$t1", TK_t1}, {"$t2", TK_t2},
-  {"$s0", TK_s0},
+  {"\\$0", TK_$0}, {"\\$ra", TK_ra}, {"\\$sp", TK_sp}, {"\\$gp", TK_gp},
+  {"\\$tp", TK_tp}, {"\\$t0", TK_t0}, {"\\$t1", TK_t1}, {"\\$t2", TK_t2},
+  {"\\$s0", TK_s0}, {"\\$s1", TK_s1}, {"\\$a0", TK_a0}, {"\\$a1", TK_a1},
+  {"\\$a2", TK_a2}, {"\\$a3", TK_a3}, {"\\$a4", TK_a4}, {"\\$a5", TK_a5},
+  {"\\$a6", TK_a6}, {"\\$a7", TK_a7}, {"\\$s2", TK_s2}, {"\\$s3", TK_s3},
+  {"\\$s4", TK_s4}, {"\\$s5", TK_s5}, {"\\$s6", TK_s6}, {"\\$s7", TK_s7},
+  {"\\$s8", TK_s8}, {"\\$s9", TK_s9}, {"\\$s10", TK_s10}, {"\\$s11", TK_s11},
+  {"\\$t3", TK_t3}, {"\\$t4", TK_t4}, {"\\$t5", TK_t5}, {"\\$t6", TK_t6},
 };
-
-/*
-"$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
-"s0", "s1", "a0", "a1", "a2", "a3", "a4", "a5",
-"a6", "a7", "s2", "s3", "s4", "s5", "s6", "s7",
-"s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6"
-*/
 
 #define NR_REGEX ARRLEN(rules)
 
@@ -361,6 +369,21 @@ uint32_t eval(int p, int q) {
       }
       // Log("Heximal str: %s, value: %d", tokens[p].str, val);
       return val;
+    } else if (tokens[p].type >= TK_REG_BEGIN && tokens[p].type <= TK_REG_END) {
+      // find register index
+      uint32_t reg_index = 0;
+      reg_index = tokens[p].type - TK_$0;
+      assert(reg_index >= 0);
+      assert(reg_index <= 31);
+
+      // get register value
+      bool suc = false;
+      uint32_t reg_value = isa_reg_str2val(regs[reg_index], &suc);
+      if (!suc) {
+        Log("Wrong register read in pos: %d, reg: %s", p, regs[reg_index]);
+        assert(0);
+      }
+      return reg_value;
     } else {
       Log("Wrong token type in pos: %d", p);
       assert(0);
