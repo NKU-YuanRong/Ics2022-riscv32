@@ -204,6 +204,7 @@ static bool make_token(char *e) {
 }
 
 bool trans_sing() {
+  // include * and -, which should be translated
   bool find = false;
   for (int i = 0; i < nr_token; i++) {
     if (tokens[i].type == '*') {
