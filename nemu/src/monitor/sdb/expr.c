@@ -178,9 +178,14 @@ static bool make_token(char *e) {
 }
 
 bool check_parentheses(int p, int q, bool *bp) {
+  // b, p is the edge of expression, bp shows whether the expression is valid or  not
   // bool to record the ret
   bool parenth = true;
+
+  // stack to record paren match
   int stack = 0;
+
+  // scan every token, ignore non-paren token
   for (int i = p; i <= q; i++) {
     if (tokens[p].type == TK_LP) {
       stack += 1;
@@ -190,13 +195,18 @@ bool check_parentheses(int p, int q, bool *bp) {
     }
     // check the stack
     if (stack < 0) {
+      // right paren with no left paren! bad expression
       *bp = true;
       return false;
     } else if (stack == 0) {
+      // the whole expression is not surrounded by a couple of paren
       parenth = false;
     }
   }
+
+  // legal expression
   *bp = false;
+
   return parenth;
 }
 
@@ -263,18 +273,75 @@ uint32_t eval(int p, int q) {
     return eval(p + 1, q - 1);
   }
   else {
-    // op = the position of 主运算符 in the token expression;
-    /*
+    // If it's bad expression, error
+    if (bad_expression) {
+      Log("Bad expression, p: %d, q: %d", p, q);
+      assert(0);
+    }
+
+    // Find main operation
+    int stack = 0; // Ignore operations in parens
+    int op = -1; // main operation
+    for (int i = p; i <= q; i++) {
+      if (tokens[i].type == '+' || tokens[i].type == '-'
+        || tokens[i].type == '*' || tokens[i].type == '/'
+        || tokens[i].type == TK_EQ || tokens[i].type == TK_LE
+        || tokens[i].type == TK_ME || tokens[i].type == TK_LT
+        || tokens[i].type == TK_MT)
+      {
+        // Ignore operations in parens
+        if (stack) {
+          continue;
+        }
+
+        // find main operation
+        if (tokens[i].type == '+' || tokens[i].type == '-') {
+          if (op == -1 || tokens[op].type == '+' || tokens[op].type == '+') {
+            op = i;
+          }
+        } else if (tokens[i].type == '*' || tokens[i].type == '/') {
+          if (op == -1 || tokens[op].type == '+' || tokens[op].type == '+'
+            || tokens[op].type == '*' || tokens[op].type == '/')
+          {
+            op = i;
+          }
+        } else if (tokens[i].type == TK_EQ || tokens[i].type == TK_LE
+          || tokens[i].type == TK_ME || tokens[i].type == TK_LT
+          || tokens[i].type == TK_MT)
+        {
+          if (op == -1 || tokens[op].type == '+' || tokens[op].type == '+'
+            || tokens[op].type == '*' || tokens[op].type == '/'
+            || tokens[op].type == TK_EQ || tokens[op].type == TK_LE
+            || tokens[op].type == TK_ME || tokens[op].type == TK_LT
+            || tokens[op].type == TK_MT)
+          {
+            op = i;
+          }
+        }
+      } else if (tokens[i].type == TK_LP) {
+        stack += 1;
+      } else if (tokens[i].type == TK_RP) {
+        stack -= 1;
+      }
+    }
+    // then op contaims the main operation
+    
+    
     uint32_t val1 = eval(p, op - 1);
     uint32_t val2 = eval(op + 1, q);
 
-    switch (op_type) {
+    switch (tokens[op].type) {
       case '+': return val1 + val2;
       case '-': return val1 - val2;
       case '*': return val1 * val2;
       case '/': return val1 / val2;
+      case TK_EQ: return (int)(val1 == val2);
+      case TK_LE: return (int)(val1 <= val2);
+      case TK_ME: return (int)(val1 >= val2);
+      case TK_LT: return (int)(val1 < val2);
+      case TK_MT: return (int)(val1 > val2);
       default: assert(0);
-    }*/
+    }
     return 0;
   }
   Log("Bad control stream at eval");
