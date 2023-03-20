@@ -150,6 +150,7 @@ static bool make_token(char *e) {
           case TK_MT:
           case TK_LP:
           case TK_RP:
+          case TK_NOT:
           case '+':
           case '-':
           case '*':
