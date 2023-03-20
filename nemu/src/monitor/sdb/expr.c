@@ -200,6 +200,7 @@ bool check_parentheses(int p, int q, bool *bp) {
       return false;
     } else if (stack == 0) {
       // the whole expression is not surrounded by a couple of paren
+      printf("not surounded!\n");
       parenth = false;
     }
   }
