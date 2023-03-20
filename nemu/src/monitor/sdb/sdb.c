@@ -253,10 +253,11 @@ static int cmd_p(char *args) {
 
 // record length of expression 
 int exp_len = 0;
+const int max_exp_len = 63;
 
 // Generate rand operation
 void gen_rand_operation(char *exp) {
-  if (exp_len > 30) {
+  if (exp_len > max_exp_len) {
     return;
   }
   switch (rand() % 9) {
@@ -301,7 +302,7 @@ void gen_rand_operation(char *exp) {
 
 // Generate rand expression
 void gen_rand_expr(char *exp) {
-  if (exp_len > 30) {
+  if (exp_len > max_exp_len) {
     return;
   }
   char num[10];
@@ -352,7 +353,7 @@ static int cmd_pt(char *args) {
     exp[0] = '\0';
     exp_len = 0;
     gen_rand_expr(exp);
-    if (exp_len > 30) {
+    if (exp_len > max_exp_len) {
       continue;
     }
     // gen_rand_operation(exp);
