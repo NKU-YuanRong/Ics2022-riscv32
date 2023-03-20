@@ -147,7 +147,7 @@ static int cmd_pt(char *args) {
     char exp[200] = "";
     gen_rand_expr(exp);
     // gen_rand_operation(exp);
-    // printf("%s\n", exp);
+    printf("Expression: %s\n", exp);
     val = expr(exp, &suc);
     printf("Token Value: %d\n", val);
   }
