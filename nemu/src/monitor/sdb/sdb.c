@@ -318,9 +318,10 @@ static int cmd_pt(char *args) {
     NUM = str2u64t(args);
   }
   MNUM = NUM;
+  char exp[300] = "";
   srand(13527);
   while (NUM-- > 0) {
-    char exp[300] = "";
+    exp[0] = '\0';
     exp_len = 0;
     gen_rand_expr(exp);
     if (exp_len > 30) {
