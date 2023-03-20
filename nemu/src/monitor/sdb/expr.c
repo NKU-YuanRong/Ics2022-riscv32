@@ -200,7 +200,6 @@ bool check_parentheses(int p, int q, bool *bp) {
       return false;
     } else if (stack == 0 && i != q) {
       // the whole expression is not surrounded by a couple of paren
-      printf("from %d to %d not surounded!\n", p, q);
       parenth = false;
     }
   }
@@ -210,6 +209,9 @@ bool check_parentheses(int p, int q, bool *bp) {
 
   if (parenth) {
     printf("from %d to %d surounded!\n", p, q);
+  }
+  else {
+    printf("from %d to %d not surounded!\n", p, q);
   }
   return parenth;
 }
