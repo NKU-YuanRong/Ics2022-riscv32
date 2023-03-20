@@ -339,6 +339,18 @@ uint32_t eval(int p, int q) {
     }
     return eval(p + 1, q - 1);
   }
+  else if (tokens[p].type >= TK_SINGLE_BEGIN && tokens[p].type <= TK_SINGLE_END) {
+    /* The first token is single operation */
+    switch (tokens[p].type) {
+      case TK_NEG:
+        return -eval(p+1, q);
+      case TK_SOLV:
+      // TODO
+        return eval(p+1, q);
+      case TK_NOT:
+        return !eval(p+1, q);
+    }
+  }
   else {
     // If it's bad expression, error
     if (bad_expression) {
@@ -352,9 +364,10 @@ uint32_t eval(int p, int q) {
     for (int i = p; i <= q; i++) {
       if (tokens[i].type == '+' || tokens[i].type == '-'
         || tokens[i].type == '*' || tokens[i].type == '/'
-        || tokens[i].type == TK_EQ || tokens[i].type == TK_LE
-        || tokens[i].type == TK_ME || tokens[i].type == TK_LT
-        || tokens[i].type == TK_MT)
+        || (tokens[i].type >= TK_DOUBLE_BEGIN && tokens[i].type <= TK_DOUBLE_END))
+        // || tokens[i].type == TK_EQ || tokens[i].type == TK_LE
+        // || tokens[i].type == TK_ME || tokens[i].type == TK_LT
+        // || tokens[i].type == TK_MT
       {
         // Ignore operations in parens
         if (stack != 0) {
@@ -432,8 +445,8 @@ word_t expr(char *e, bool *success) {
     Log("No single operation found.");
   }
 
-  *success = true;
-  return 0;
+  // *success = true;
+  // return 0;
 
   /*
   for (int i = 0; i < nr_token; i++) {
