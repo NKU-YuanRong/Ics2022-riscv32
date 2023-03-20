@@ -215,6 +215,7 @@ bool trans_sing() {
       || (tokens[i - 1].type == TK_LP))
       {
         tokens[i].type = TK_SOLV;
+        printf("Change position %d to TK_SOLV\n", i);
         find = true;
       }
     } else if (tokens[i].type == '-') {
@@ -226,6 +227,7 @@ bool trans_sing() {
       || (tokens[i - 1].type == TK_LP))
       {
         tokens[i].type = TK_NEG;
+        printf("Change position %d to TK_NEG\n", i);
         find = true;
       }
     }
