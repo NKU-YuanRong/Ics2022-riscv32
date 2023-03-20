@@ -45,7 +45,7 @@ enum {
   TK_NOT,   // Logic not
   TK_SINGLE_END,
 
-  //-------------------KEEP-OPERATIONS-TOGETHER----------
+  //----------KEEP-OPERATIONS-TOGETHER----------
 
   // Paren
   TK_LP,
@@ -55,10 +55,16 @@ enum {
   TK_HEX,
   TK_DEC,
 
+  // Register
+  TK_$0, TK_ra, TK_sp, TK_gp, TK_tp, TK_t0, TK_t1, TK_t2,
+  TK_s0, TK_s1, TK_a0, TK_a1, TK_a2, TK_a3, TK_a4, TK_a5,
+  TK_a6, TK_a7, TK_s2, TK_s3, TK_s4, TK_s5, TK_s6, TK_s7,
+  TK_s8, TK_s9, TK_s10, TK_s11, TK_t3, TK_t4, TK_t5, TK_t6,
 
   /* TODO: Add more token types */
 
 };
+
 
 static struct rule {
   const char *regex;
@@ -70,6 +76,8 @@ static struct rule {
    */
 
   {" +", TK_NOTYPE},    // spaces
+
+  // Double operations
   {"\\+", '+'},         // plus
   {"-", '-'},           // minus
   {"\\*", '*'},         // nulti
@@ -82,12 +90,30 @@ static struct rule {
   {">", TK_MT},         // more than
   {"&&", TK_LAND},      // logic and
   {"\\|\\|", TK_LOR},     // logic or
+
+  // Single operations
   {"!", TK_NOT},          // not
+
+  // Parens
   {"\\(", TK_LP},         // left paren
   {"\\)", TK_RP},         // right paren
+
+  // Numbers
   {"0[xX][0-9a-fA-F]+", TK_HEX}, // hex number
   {"[0-9]+", TK_DEC},   // dec number
+
+  // Registers
+  {"$0", TK_$0}, {"$ra", TK_ra}, {"$sp", TK_sp}, {"$gp", TK_gp},
+  {"$tp", TK_tp}, {"$t0", TK_t0}, {"$t1", TK_t1}, {"$t2", TK_t2},
+  {"$s0", TK_s0},
 };
+
+/*
+"$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
+"s0", "s1", "a0", "a1", "a2", "a3", "a4", "a5",
+"a6", "a7", "s2", "s3", "s4", "s5", "s6", "s7",
+"s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6"
+*/
 
 #define NR_REGEX ARRLEN(rules)
 
