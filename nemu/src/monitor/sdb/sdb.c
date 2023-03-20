@@ -78,10 +78,9 @@ static int cmd_p(char *args) {
   bool suc = false;
   uint32_t val = expr(args, &suc);
   if (!suc) {
-    Log("Solve fail!");
+    Log(ANSI_FMT("Solve fail!", ANSI_FG_RED));
   }
   printf("Token Value: %d\n", val);
-  Log(ANSI_FMT("ABORT", ANSI_FG_RED));
   return 0;
 }
 
