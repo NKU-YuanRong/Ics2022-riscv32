@@ -249,20 +249,27 @@ static int cmd_p(char *args) {
   return 0;
 }
 
+// record length of expression 
+int exp_len = 0;
+
 // Generate rand operation
 void gen_rand_operation(char *exp) {
   switch (rand() % 4) {
     case 0:
       strcat(exp, "+");
+      exp_len++;
       return;
     case 1:
       strcat(exp, "-");
+      exp_len++;
       return;
     case 2:
       strcat(exp, "*");
+      exp_len++;
       return;
     default:
       strcat(exp, "+");
+      exp_len++;
       return;
   }
 }
@@ -275,17 +282,21 @@ void gen_rand_expr(char *exp) {
     case 0:
       snprintf(num, 10, "%d", rand());
       strcat(exp, num);
+      exp_len++;
       return;
     case 1:
       snprintf(num, 10, "%x", rand());
       char *num2 = "0x";
       strcat(exp, num2);
       strcat(exp, num);
+      exp_len++;
       return;
     case 2:
       strcat(exp, "(");
+      exp_len++;
       gen_rand_expr(exp);
       strcat(exp, ")");
+      exp_len++;
       return;
     default:
       gen_rand_expr(exp);
@@ -300,21 +311,24 @@ static int cmd_pt(char *args) {
   bool suc = false;
   uint32_t val;
   args = strtok(args, " ");
-  uint64_t NUM = str2u64t(args);
+  uint64_t NUM = 50;
+  if (args == NULL) {
+    NUM = 50;
+  } else {
+    NUM = str2u64t(args);
+  }
   srand(13527);
   while (NUM-- > 0) {
-    /*
-    uint32_t val = expr(gen_rand_expr(), &suc);
-    if (!suc) {
-      Log(ANSI_FMT("Solve fail!", ANSI_FG_RED));
-    }
-    printf("Token Value: %d\n", val);*/
-    char exp[200] = "";
+    char exp[300] = "";
+    exp_len = 0;
     gen_rand_expr(exp);
+    if (exp_len > 30) {
+      continue;
+    }
     // gen_rand_operation(exp);
-    printf("%ld Expression: %s\n", 100 - NUM, exp);
+    printf("%ld Expression: %s, length: %d\n", 50 - NUM, exp, exp_len);
     val = expr(exp, &suc);
-    printf("%ld Token Value: %d\n", 100- NUM, val);
+    printf("%ld Token Value: %d\n", 50- NUM, val);
   }
   return 0;
 }
