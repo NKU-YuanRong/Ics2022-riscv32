@@ -95,7 +95,6 @@ void free_wp(int N) {
   if (head->NO == N) {
     head = head->next;
     Insert_to_free_(wp_pool + N);
-    Log("Free watch point %d", N);
     return;
   }
   // Find first free node
