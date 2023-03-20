@@ -26,6 +26,16 @@ static int is_batch_mode = false;
 void init_regex();
 void init_wp_pool();
 
+typedef struct watchpoint {
+  int NO;
+  struct watchpoint *next;
+
+  /* TODO: Add more members if necessary */
+
+} WP;
+WP* new_wp();
+void free_wp(WP *wp);
+
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -78,6 +88,10 @@ static int cmd_x(char *args);
 // Solve expression
 static int cmd_p(char *args);
 
+static int cmd_w(char *args);
+
+static int cmd_d(char *args);
+
 // cmd tp to test cmd_p
 static int cmd_pt(char *args);
 
@@ -106,6 +120,8 @@ static struct {
   { "info", "Show program status", cmd_info },
   { "x", "Scan a storage area", cmd_x },
   { "p", "Solve an expression", cmd_p },
+  { "w", "Set a watch point", cmd_w },
+  { "d", "Delete a watch point", cmd_d },
 
   // test instructions
   { "pt", "Test Instruction p", cmd_pt },
@@ -249,6 +265,20 @@ static int cmd_p(char *args) {
     Log(ANSI_FMT("Solve fail!", ANSI_FG_RED));
   }
   printf("Token Value: %d\n", val);
+  return 0;
+}
+
+static int cmd_w(char *args) {
+  // bool suc = false;
+  // uint32_t val = expr(args, &suc);
+  // if (!suc) {
+  //   Log(ANSI_FMT("Solve fail!", ANSI_FG_RED));
+  // }
+  new_wp();
+  return 0;
+}
+
+static int cmd_d(char *args) {
   return 0;
 }
 
