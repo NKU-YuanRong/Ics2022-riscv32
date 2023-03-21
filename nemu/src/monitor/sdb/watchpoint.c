@@ -138,6 +138,7 @@ bool difftest_watchpoint() {
     assert(suc);
     if (val != p->value) {
       Log("Watch point %d is triggered, expr: %s", p->NO, p->expr);
+      p->value = val;
       ex_stop = true;
     }
     p = p->next;
