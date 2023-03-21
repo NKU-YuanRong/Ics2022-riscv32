@@ -26,7 +26,6 @@ static int is_batch_mode = false;
 void init_regex();
 void init_wp_pool();
 
-
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
   static char *line_read = NULL;
@@ -59,7 +58,7 @@ static int cmd_q(char *args) {
 
 static int cmd_help(char *args);
 
-uint64_t str2u64t(char *args);
+uint32_t str2u32t(char *args);
 
 // command single executing, use uint32_t
 static int cmd_si(char *args);
@@ -72,11 +71,22 @@ static int info_r() {
   return 0;
 }
 
+void show_all_wp();
+
+static int info_w() {
+  show_all_wp();
+  return 0;
+}
+
 // command scan the memory
 static int cmd_x(char *args);
 
 // Solve expression
 static int cmd_p(char *args);
+
+static int cmd_w(char *args);
+
+static int cmd_d(char *args);
 
 // cmd tp to test cmd_p
 static int cmd_pt(char *args);
@@ -89,6 +99,7 @@ static struct {
   int (*handler) (void);
 } info_table [] = {
   { "r", "Print all registers", info_r },
+  { "w", "Print all watchpointers", info_w },
 };
 
 
@@ -106,6 +117,8 @@ static struct {
   { "info", "Show program status", cmd_info },
   { "x", "Scan a storage area", cmd_x },
   { "p", "Solve an expression", cmd_p },
+  { "w", "Set a watch point", cmd_w },
+  { "d", "Delete a watch point", cmd_d },
 
   // test instructions
   { "pt", "Test Instruction p", cmd_pt },
@@ -137,7 +150,7 @@ static int cmd_help(char *args) {
 }
 
 
-uint64_t str2u64t(char *args) {
+uint32_t str2u32t(char *args) {
   //just use the first argument, ignore others
   args = strtok(args, " ");
 
@@ -145,13 +158,13 @@ uint64_t str2u64t(char *args) {
     assert(0);
   }
 
-  uint64_t N = 0;
+  uint32_t N = 0;
 
   char *args_ptr = args;
   for (int i = 0; i < strlen(args); i++) {
     if ('0' <= args_ptr[i] && '9' >= args_ptr[i]) {
       N *= 10;
-      N += (uint64_t)(args_ptr[i] - '0');
+      N += (uint32_t)(args_ptr[i] - '0');
     }
     else {
       // invalid input
@@ -169,13 +182,13 @@ static int cmd_si(char *args) {
   }
 
   // N to record the specific value of the first argument
-  uint64_t N = 0;
+  uint32_t N = 0;
 
   // ignore useless arguments
   args = strtok(args, " ");
 
   // calculating the value of N
-  N = str2u64t(args);
+  N = str2u32t(args);
 
   // printf("Test: N = %lu\n", N);
   // execute N insts
@@ -212,24 +225,25 @@ static int cmd_info(char *args) {
 static int cmd_x(char *args) {
   // N to record the specific value of the first argument
   
-  uint64_t N = 0;
-  uint64_t exp_value = 0;
+  uint32_t N = 0;
+  uint32_t exp_value = 0;
 
   // arg to store every argument
   char *arg = strtok(args, " ");
   char *exp = strtok(NULL, " ");
 
   if (arg != NULL) {
-    N = str2u64t(arg);
+    N = str2u32t(arg);
     if (exp != NULL) {
-      // exp_value = str2u64t(expr);
       bool suc;
       exp_value = expr(exp, &suc);
       assert(suc);
       int i;
       for (i = 0; i < N; i++) {
         printf("0x%08x: ", (uint32_t)exp_value);
-        printf("%02x %02x %02x %02x\n", vaddr_read(exp_value + 3, 1), vaddr_read(exp_value + 2, 1), vaddr_read(exp_value + 1, 1), vaddr_read(exp_value, 1));
+        printf("%02x %02x %02x %02x  ", vaddr_read(exp_value + 3, 1), vaddr_read(exp_value + 2, 1), vaddr_read(exp_value + 1, 1), vaddr_read(exp_value, 1));
+        // printf("%d %d %d %d\n", vaddr_read(exp_value + 3, 1), vaddr_read(exp_value + 2, 1), vaddr_read(exp_value + 1, 1), vaddr_read(exp_value, 1));
+        printf("%d\n", vaddr_read(exp_value, 4));
         exp_value += 4;
       }
       return 0;
@@ -251,12 +265,50 @@ static int cmd_p(char *args) {
   return 0;
 }
 
+bool cmd_new_wp(char *args, uint32_t val);
+
+static int cmd_w(char *args) {
+  if (args == NULL) {
+    Log(ANSI_FMT("Please input a valid expression!", ANSI_FG_RED));
+    return 0;
+  }
+  bool suc = false;
+  uint32_t val = expr(args, &suc);
+  if (!suc) {
+    Log(ANSI_FMT("Solve fail!", ANSI_FG_RED));
+  } else {
+    if (!cmd_new_wp(args, val)) {
+      Log(ANSI_FMT("Get watch point fail!", ANSI_FG_RED));
+    }
+  }
+  return 0;
+}
+
+void free_wp(int N);
+
+static int cmd_d(char *args) {
+  args = strtok(args, " ");
+  if (args == NULL) {
+    Log(ANSI_FMT("Please input point number!", ANSI_FG_RED));
+    return 0;
+  }
+  uint32_t N = str2u32t(args);
+  Log("Free watch point %d", N);
+  free_wp(N);
+  return 0;
+}
+
 // record length of expression 
 int exp_len = 0;
+// max token number(in expr.c) is 64, so max expression length is 63
+const int max_exp_len = 63;
 
 // Generate rand operation
 void gen_rand_operation(char *exp) {
-  switch (rand() % 4) {
+  if (exp_len > max_exp_len) {
+    return;
+  }
+  switch (rand() % 9) {
     case 0:
       strcat(exp, "+");
       exp_len++;
@@ -269,8 +321,28 @@ void gen_rand_operation(char *exp) {
       strcat(exp, "*");
       exp_len++;
       return;
-    default:
+    case 3:
       strcat(exp, "+");
+      exp_len++;
+      return;
+    case 4:
+      strcat(exp, "==");
+      exp_len++;
+      return;
+    case 5:
+      strcat(exp, "<=");
+      exp_len++;
+      return;
+    case 6:
+      strcat(exp, ">=");
+      exp_len++;
+      return;
+    case 7:
+      strcat(exp, "<");
+      exp_len++;
+      return;
+    case 8:
+      strcat(exp, ">");
       exp_len++;
       return;
   }
@@ -278,20 +350,16 @@ void gen_rand_operation(char *exp) {
 
 // Generate rand expression
 void gen_rand_expr(char *exp) {
-  /**/
+  if (exp_len > max_exp_len) {
+    return;
+  }
   char num[10];
-  switch (rand() % 4) {
+  switch (rand() % 5) {
     case 0:
-      snprintf(num, 10, "%d", rand());
-      strcat(exp, num);
-      exp_len++;
-      return;
     case 1:
-      snprintf(num, 10, "%x", rand());
-      char *num2 = "0x";
-      strcat(exp, num2);
-      strcat(exp, num);
-      exp_len++;
+      gen_rand_expr(exp);
+      gen_rand_operation(exp);
+      gen_rand_expr(exp);
       return;
     case 2:
       strcat(exp, "(");
@@ -300,10 +368,17 @@ void gen_rand_expr(char *exp) {
       strcat(exp, ")");
       exp_len++;
       return;
-    default:
-      gen_rand_expr(exp);
-      gen_rand_operation(exp);
-      gen_rand_expr(exp);
+    case 3:
+      snprintf(num, 10, "%x", rand());
+      char *num2 = "0x";
+      strcat(exp, num2);
+      strcat(exp, num);
+      exp_len++;
+      return;
+    case 4:
+      snprintf(num, 10, "%d", rand());
+      strcat(exp, num);
+      exp_len++;
       return;
   }
 }
@@ -315,19 +390,19 @@ static int cmd_pt(char *args) {
   args = strtok(args, " ");
   uint64_t NUM, MNUM;
   if (args == NULL) {
-    NUM = 50;
+    NUM = 100;
   } else {
-    NUM = str2u64t(args);
+    NUM = str2u32t(args);
   }
   MNUM = NUM;
-  char exp[300] = "";
+  char exp[500] = "";
   time_t t;
   srand((unsigned) time(&t));
   while (NUM-- > 0) {
     exp[0] = '\0';
     exp_len = 0;
     gen_rand_expr(exp);
-    if (exp_len > 30) {
+    if (exp_len > max_exp_len) {
       continue;
     }
     // gen_rand_operation(exp);

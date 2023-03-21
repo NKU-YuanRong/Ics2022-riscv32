@@ -121,6 +121,9 @@ endmenu
 
 menu "Testing and Debugging"
 
+config WATCHPOINT
+  bool "Enable watch point"
+  default y
 
 config TRACE
   bool "Enable tracer"

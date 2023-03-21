@@ -20,21 +20,63 @@
  */
 #include <regex.h>
 
+// Just declare before use
+word_t vaddr_read(vaddr_t addr, int len);
+word_t isa_reg_str2val(const char *s, bool *success);
+
+
+const char *regsters_on_expr[] = {
+  "$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
+  "s0", "s1", "a0", "a1", "a2", "a3", "a4", "a5",
+  "a6", "a7", "s2", "s3", "s4", "s5", "s6", "s7",
+  "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6"
+};
+
 enum {
   TK_NOTYPE = 256,
+
+  // Double
+  TK_DOUBLE_BEGIN,
   TK_EQ,
+  TK_NE,
   TK_LE,
   TK_ME,
   TK_LT,
   TK_MT,
+  TK_LAND,
+  TK_LOR,
+  TK_DOUBLE_END,
+
+  // Single
+  TK_SINGLE_BEGIN,
+  TK_NEG,   // Negative
+  TK_SOLV,  // Decoding
+  TK_NOT,   // Logic not
+  TK_SINGLE_END,
+
+  //----------KEEP-OPERATIONS-TOGETHER----------
+
+  // Paren
   TK_LP,
   TK_RP,
+
+  // Number
   TK_HEX,
   TK_DEC,
+
+  // Register
+  TK_REG_BEGIN,
+  TK_$0, TK_ra, TK_sp, TK_gp, TK_tp, TK_t0, TK_t1, TK_t2,
+  TK_s0, TK_s1, TK_a0, TK_a1, TK_a2, TK_a3, TK_a4, TK_a5,
+  TK_a6, TK_a7, TK_s2, TK_s3, TK_s4, TK_s5, TK_s6, TK_s7,
+  TK_s8, TK_s9, TK_s10, TK_s11, TK_t3, TK_t4, TK_t5, TK_t6,
+  TK_pc,
+  TK_REG_END,
 
   /* TODO: Add more token types */
 
 };
+
 
 static struct rule {
   const char *regex;
@@ -46,19 +88,42 @@ static struct rule {
    */
 
   {" +", TK_NOTYPE},    // spaces
+
+  // Double operations
   {"\\+", '+'},         // plus
   {"-", '-'},           // minus
   {"\\*", '*'},         // nulti
   {"/", '/'},           // devide
   {"==", TK_EQ},        // equal
+  {"!=", TK_NE},        // not equal
   {"<=", TK_LE},        // less equal
   {">=", TK_ME},        // more equal
   {"<", TK_LT},         // less than
   {">", TK_MT},         // more than
+  {"&&", TK_LAND},      // logic and
+  {"\\|\\|", TK_LOR},     // logic or
+
+  // Single operations
+  {"!", TK_NOT},          // not
+
+  // Parens
   {"\\(", TK_LP},         // left paren
   {"\\)", TK_RP},         // right paren
+
+  // Numbers
   {"0[xX][0-9a-fA-F]+", TK_HEX}, // hex number
   {"[0-9]+", TK_DEC},   // dec number
+
+  // Registers
+  {"\\$0", TK_$0}, {"\\$ra", TK_ra}, {"\\$sp", TK_sp}, {"\\$gp", TK_gp},
+  {"\\$tp", TK_tp}, {"\\$t0", TK_t0}, {"\\$t1", TK_t1}, {"\\$t2", TK_t2},
+  {"\\$s0", TK_s0}, {"\\$s1", TK_s1}, {"\\$a0", TK_a0}, {"\\$a1", TK_a1},
+  {"\\$a2", TK_a2}, {"\\$a3", TK_a3}, {"\\$a4", TK_a4}, {"\\$a5", TK_a5},
+  {"\\$a6", TK_a6}, {"\\$a7", TK_a7}, {"\\$s2", TK_s2}, {"\\$s3", TK_s3},
+  {"\\$s4", TK_s4}, {"\\$s5", TK_s5}, {"\\$s6", TK_s6}, {"\\$s7", TK_s7},
+  {"\\$s8", TK_s8}, {"\\$s9", TK_s9}, {"\\$s10", TK_s10}, {"\\$s11", TK_s11},
+  {"\\$t3", TK_t3}, {"\\$t4", TK_t4}, {"\\$t5", TK_t5}, {"\\$t6", TK_t6},
+  {"\\$pc", TK_pc}, 
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -87,7 +152,8 @@ typedef struct token {
   char str[32];
 } Token;
 
-static Token tokens[32] __attribute__((used)) = {};
+// max token number is 64
+static Token tokens[64] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 
 static bool make_token(char *e) {
@@ -124,10 +190,16 @@ static bool make_token(char *e) {
           case TK_MT:
           case TK_LP:
           case TK_RP:
+          case TK_NOT:
           case '+':
           case '-':
           case '*':
           case '/':
+          case TK_$0: case TK_ra: case TK_sp: case TK_gp: case TK_tp: case TK_t0: case TK_t1: case TK_t2:
+          case TK_s0: case TK_s1: case TK_a0: case TK_a1: case TK_a2: case TK_a3: case TK_a4: case TK_a5:
+          case TK_a6: case TK_a7: case TK_s2: case TK_s3: case TK_s4: case TK_s5: case TK_s6: case TK_s7:
+          case TK_s8: case TK_s9: case TK_s10: case TK_s11: case TK_t3: case TK_t4: case TK_t5: case TK_t6:
+          case TK_pc:
             tokens[nr_token].type = rules[i].token_type;
             nr_token++;
             break;
@@ -177,6 +249,46 @@ static bool make_token(char *e) {
   return true;
 }
 
+int decode_addr(uint32_t addr) {
+  uint32_t value = 0;
+  value = vaddr_read(addr, 4);
+  // printf("%d\n", vaddr_read(exp_value, 4));
+  return value;
+}
+
+bool trans_sing() {
+  // include * and -, which should be translated
+  bool find = false;
+  for (int i = 0; i < nr_token; i++) {
+    if (tokens[i].type == '*') {
+      if ((i == 0)
+      || (tokens[i - 1].type >= TK_DOUBLE_BEGIN && tokens[i - 1].type <= TK_DOUBLE_END)
+      || (tokens[i - 1].type >= TK_SINGLE_BEGIN && tokens[i - 1].type <= TK_SINGLE_END)
+      || (tokens[i - 1].type == '+' || tokens[i - 1].type == '-')
+      || (tokens[i - 1].type == '*' || tokens[i - 1].type == '/')
+      || (tokens[i - 1].type == TK_LP))
+      {
+        tokens[i].type = TK_SOLV;
+        // printf("Change position %d to TK_SOLV\n", i);
+        find = true;
+      }
+    } else if (tokens[i].type == '-') {
+      if ((i == 0)
+      || (tokens[i - 1].type >= TK_DOUBLE_BEGIN && tokens[i - 1].type <= TK_DOUBLE_END)
+      || (tokens[i - 1].type >= TK_SINGLE_BEGIN && tokens[i - 1].type <= TK_SINGLE_END)
+      || (tokens[i - 1].type == '+' || tokens[i - 1].type == '-')
+      || (tokens[i - 1].type == '*' || tokens[i - 1].type == '/')
+      || (tokens[i - 1].type == TK_LP))
+      {
+        tokens[i].type = TK_NEG;
+        // printf("Change position %d to TK_NEG\n", i);
+        find = true;
+      }
+    }
+  }
+  return find;
+}
+
 bool check_parentheses(int p, int q, bool *bp) {
   // b, p is the edge of expression, bp shows whether the expression is valid or  not
   // bool to record the ret
@@ -214,6 +326,7 @@ bool check_parentheses(int p, int q, bool *bp) {
   else {
     printf("from %d to %d not surounded!\n", p, q);
   }*/
+  
   return parenth;
 }
 
@@ -264,6 +377,27 @@ uint32_t eval(int p, int q) {
       }
       // Log("Heximal str: %s, value: %d", tokens[p].str, val);
       return val;
+    } else if (tokens[p].type >= TK_REG_BEGIN && tokens[p].type <= TK_REG_END) {
+      // register index and value
+      uint32_t reg_index = 0, reg_value = 0;
+      bool suc = false;
+
+      // pc and other registers
+      if (tokens[p].type == TK_pc) {
+        reg_value = isa_reg_str2val("pc", &suc);
+      } else {
+        reg_index = tokens[p].type - TK_$0;
+        assert(reg_index >= 0);
+        assert(reg_index <= 31);
+        // get register value
+        reg_value = isa_reg_str2val(regsters_on_expr[reg_index], &suc);
+      }
+
+      if (!suc) {
+        Log("Wrong register read in pos: %d, reg: %s", p, regsters_on_expr[reg_index]);
+        assert(0);
+      }
+      return reg_value;
     } else {
       Log("Wrong token type in pos: %d", p);
       assert(0);
@@ -279,6 +413,18 @@ uint32_t eval(int p, int q) {
     }
     return eval(p + 1, q - 1);
   }
+  else if (tokens[p].type >= TK_SINGLE_BEGIN && tokens[p].type <= TK_SINGLE_END) {
+    /* The first token is single operation */
+    switch (tokens[p].type) {
+      case TK_NEG:
+        return -eval(p+1, q);
+      case TK_SOLV:
+      // TODO
+        return decode_addr(eval(p+1, q));
+      case TK_NOT:
+        return !eval(p+1, q);
+    }
+  }
   else {
     // If it's bad expression, error
     if (bad_expression) {
@@ -292,9 +438,10 @@ uint32_t eval(int p, int q) {
     for (int i = p; i <= q; i++) {
       if (tokens[i].type == '+' || tokens[i].type == '-'
         || tokens[i].type == '*' || tokens[i].type == '/'
-        || tokens[i].type == TK_EQ || tokens[i].type == TK_LE
-        || tokens[i].type == TK_ME || tokens[i].type == TK_LT
-        || tokens[i].type == TK_MT)
+        || (tokens[i].type >= TK_DOUBLE_BEGIN && tokens[i].type <= TK_DOUBLE_END))
+        // || tokens[i].type == TK_EQ || tokens[i].type == TK_LE
+        // || tokens[i].type == TK_ME || tokens[i].type == TK_LT
+        // || tokens[i].type == TK_MT
       {
         // Ignore operations in parens
         if (stack != 0) {
@@ -335,7 +482,7 @@ uint32_t eval(int p, int q) {
     }
     assert(op > 0);
     // then op contaims the main operation
-    printf("main operation: %d\n", tokens[op].type);
+    // printf("main operation: %d\n", tokens[op].type);
     
     
     uint32_t val1 = eval(p, op - 1);
@@ -364,7 +511,9 @@ word_t expr(char *e, bool *success) {
     *success = false;
     return 0;
   }
-  Log("match succesfully! valid token number: %d", nr_token);
+  // Log("match succesfully! valid token number: %d", nr_token);
+
+  trans_sing();
 
   /*
   for (int i = 0; i < nr_token; i++) {
