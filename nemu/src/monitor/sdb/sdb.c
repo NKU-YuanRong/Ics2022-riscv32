@@ -71,6 +71,13 @@ static int info_r() {
   return 0;
 }
 
+void show_all_wp();
+
+static int info_w() {
+  show_all_wp();
+  return 0;
+}
+
 // command scan the memory
 static int cmd_x(char *args);
 
@@ -92,6 +99,7 @@ static struct {
   int (*handler) (void);
 } info_table [] = {
   { "r", "Print all registers", info_r },
+  { "w", "Print all watchpointers", info_w },
 };
 
 

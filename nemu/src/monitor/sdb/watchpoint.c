@@ -49,7 +49,7 @@ void init_wp_pool() {
 
 /* TODO: Implement the functionality of watchpoint */
 
-bool Insert_to_head(WP *np) {
+bool static Insert_to_head(WP *np) {
   if (!head) {
     head = np;
     np->next = NULL;
@@ -61,7 +61,7 @@ bool Insert_to_head(WP *np) {
   return true;
 }
 
-bool Insert_to_free_(WP *np) {
+bool static Insert_to_free_(WP *np) {
   if (!free_) {
     free_ = np;
     np->next = NULL;
@@ -143,4 +143,16 @@ bool difftest_watchpoint() {
     p = p->next;
   }
   return ex_stop;
+}
+
+void show_all_wp() {
+  if (!head) {
+    printf("No watchpoints.\n");
+    return;
+  }
+  WP *p = head;
+  printf("Number\tType\t\tExpr\n");
+  while (p) {
+    printf("%d\thw watchpoint\t%s\n", p->NO, p->expr);
+  }
 }
