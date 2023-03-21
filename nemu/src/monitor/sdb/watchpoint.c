@@ -154,5 +154,6 @@ void show_all_wp() {
   printf("Number\tType\t\tExpr\n");
   while (p) {
     printf("%d\thw watchpoint\t%s\n", p->NO, p->expr);
+    p = p->next;
   }
 }
