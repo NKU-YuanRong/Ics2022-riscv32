@@ -60,7 +60,10 @@ else
 include $(NEMU_HOME)/scripts/native.mk
 endif
 
+# Count total number of code lines of nemu
 count:
 	find . | grep '\.c$$\|\.h$$' | xargs wc -l
+# count for total lines include space lines
 countl:
 	find . | grep '\.c$$\|\.h$$' | xargs grep -n [^$$] | wc -l
+# countl for total lines except spaces lines
