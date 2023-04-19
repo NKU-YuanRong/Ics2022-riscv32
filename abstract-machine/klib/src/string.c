@@ -99,7 +99,7 @@ void *memcpy(void *out, const void *in, size_t n) {
   }
   return out;
 }
-
+/*
 int memcmp(const void *s1, const void *s2, size_t n) {
   // panic("Not implemented");
   char *t1 = (char *)s1, *t2 = (char *)s2;
@@ -111,8 +111,8 @@ int memcmp(const void *s1, const void *s2, size_t n) {
     t2++;
   }
   return *t1 - *t2;
-}
-/*
+}*/
+
 int memcmp(const void *s1, const void *s2, size_t n) {
   char *p = (char*)s1;
 	char *q = (char*)s2;
@@ -124,6 +124,6 @@ int memcmp(const void *s1, const void *s2, size_t n) {
 		++q;
 	}
 	return flag;
-}*/
+}
 
 #endif
