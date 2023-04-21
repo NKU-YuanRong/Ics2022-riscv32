@@ -129,6 +129,10 @@ config TRACE
   bool "Enable tracer"
   default y
 
+config MTRACE
+  bool "Enable mtrace"
+  default y
+
 config TRACE_START
   depends on TRACE
   int "When tracing is enabled (unit: number of instructions)"
