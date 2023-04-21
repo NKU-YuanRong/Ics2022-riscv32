@@ -47,9 +47,15 @@ static int make_out(char *out, const char *fmt, va_list ap) {
 		if (*fmt == '%') {
 			fmt++;
 			switch (*fmt) {
-				case 'd': p = get_int(p, &ap);break;
-				case 's': p = get_string(p, &ap);break;
-				case 'c': p = get_char(p, &ap);break;
+				case 'd': 
+          p = get_int(p, &ap);
+          break;
+				case 's': 
+          p = get_string(p, &ap);
+          break;
+				case 'c':
+          p = get_char(p, &ap);
+          break;
 			}
 			fmt++;
 		}
@@ -78,7 +84,29 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 int sprintf(char *out, const char *fmt, ...) {
 	va_list ap;
 	va_start(ap, fmt);
-	make_out(out, fmt, ap);
+	// make_out(out, fmt, ap);
+  char* p = (char*)out;
+	while (*fmt) {
+		if (*fmt == '%') {
+			fmt++;
+			switch (*fmt) {
+				case 'd': 
+          p = get_int(p, &ap);
+          break;
+				case 's': 
+          p = get_string(p, &ap);
+          break;
+				case 'c':
+          p = get_char(p, &ap);
+          break;
+			}
+			fmt++;
+		}
+		else {
+			*p++ = *fmt++;
+		}
+	}
+	*p++ = '\0';
 	va_end(ap);
 	return 0;
   //panic("Not implemented");
