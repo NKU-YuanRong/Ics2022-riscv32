@@ -40,7 +40,7 @@ static char* get_char(char* p, va_list *ap) {
 	*p++ = ch;
 	return p;
 }
-
+/*
 static int make_out(char *out, const char *fmt, va_list ap) {
 	char* p = (char*)out;
 	while (*fmt) {
@@ -65,13 +65,34 @@ static int make_out(char *out, const char *fmt, va_list ap) {
 	}
 	*p++ = '\0';
 	return 0;
-}
+}*/
 
 int printf(const char *fmt, ...) {
   char out[2048];
 	va_list ap;
 	va_start(ap, fmt);
-	make_out(out, fmt, ap);
+  char* p = (char*)out;
+	while (*fmt) {
+		if (*fmt == '%') {
+			fmt++;
+			switch (*fmt) {
+				case 'd': 
+          p = get_int(p, &ap);
+          break;
+				case 's': 
+          p = get_string(p, &ap);
+          break;
+				case 'c':
+          p = get_char(p, &ap);
+          break;
+			}
+			fmt++;
+		}
+		else {
+			*p++ = *fmt++;
+		}
+	}
+	*p++ = '\0';
 	va_end(ap);
 	putstr(out);
 	return 0;
@@ -84,7 +105,6 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 int sprintf(char *out, const char *fmt, ...) {
 	va_list ap;
 	va_start(ap, fmt);
-	// make_out(out, fmt, ap);
   char* p = (char*)out;
 	while (*fmt) {
 		if (*fmt == '%') {
