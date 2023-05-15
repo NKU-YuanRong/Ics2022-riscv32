@@ -79,7 +79,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 int sprintf(char *out, const char *fmt, ...) {
 	va_list ap;
 	va_start(ap, fmt);
-  char* p = (char*)out;
+    char* p = (char*)out;
 	while (*fmt) {
 		if (*fmt == '%') {
 			fmt++;
