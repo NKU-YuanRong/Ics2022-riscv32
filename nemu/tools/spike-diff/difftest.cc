@@ -113,3 +113,9 @@ __EXPORT void difftest_init(int port) {
       true);
   s->diff_init(port);
 }
+
+__EXPORT void difftest_raise_intr(uint64_t NO) {
+  trap_t t(NO);
+  p->take_trap_public(t, state->pc);
+}
+}
