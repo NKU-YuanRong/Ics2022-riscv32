@@ -33,7 +33,7 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
 		}
 	}
 
-	if (ref_r->pc != pc) {
+	if (ref_r->pc != cpu.pc) {
 		printf("Find difference at pc=%#x, ref=%#x\n", pc, ref_r->pc);
 		return false;
 	}
