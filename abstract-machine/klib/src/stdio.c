@@ -69,7 +69,7 @@ int printf(const char *fmt, ...) {
 	*p++ = '\0';
 	va_end(ap);
 	putstr(out);
-	return 0;
+	return (int)(p - out);
 }
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
@@ -85,14 +85,14 @@ int sprintf(char *out, const char *fmt, ...) {
 			fmt++;
 			switch (*fmt) {
 				case 'd': 
-          p = get_int(p, &ap);
-          break;
+					p = get_int(p, &ap);
+					break;
 				case 's': 
-          p = get_string(p, &ap);
-          break;
+					p = get_string(p, &ap);
+					break;
 				case 'c':
-          p = get_char(p, &ap);
-          break;
+					p = get_char(p, &ap);
+					break;
 			}
 			fmt++;
 		}
@@ -102,7 +102,7 @@ int sprintf(char *out, const char *fmt, ...) {
 	}
 	*p++ = '\0';
 	va_end(ap);
-	return 0;
+	return (int)(p - out);
   //panic("Not implemented");
 }
 
