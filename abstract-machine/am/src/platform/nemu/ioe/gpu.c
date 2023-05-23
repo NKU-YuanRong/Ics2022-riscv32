@@ -29,9 +29,9 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
 	int i, j;
 	int screen_width = inl(VGACTL_ADDR) >> 16;
 	uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
-	uint32_t *pixels = (uint32_t *)ctl->pixels;
-	for (i = ctl->x; i < ctl->x + ctl->h; i++)
-		for (j = ctl->y; j < ctl->y + ctl->w; j++) {
+	uint32_t *pixels = ctl->pixels;
+	for (i = ctl->y; i < ctl->y + ctl->h; i++)
+		for (j = ctl->x; j < ctl->x + ctl->w; j++) {
 			// outl((uintptr_t)(fb+(ctl->x+j)+(ctl->y+i)*screen_width), pixels[i*ctl->w+j]);
 			fb[screen_width*i+j] = pixels[ctl->w*(i-ctl->y)+(j-ctl->x)];
 		}
