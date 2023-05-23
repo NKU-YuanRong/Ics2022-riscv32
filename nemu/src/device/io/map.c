@@ -53,11 +53,11 @@ void init_map() {
 }
 
 word_t map_read(paddr_t addr, int len, IOMap *map) {
-  #ifdef CONFIG_DTRACE
-    Log("%#x\t for len=%d at %s", addr, len, map ? map->name : "No device");
-  #endif
   assert(len >= 1 && len <= 8);
   check_bound(map, addr);
+#ifdef CONFIG_DTRACE
+	Log("From device %s read %d bytes", map->name, len);
+#endif
   paddr_t offset = addr - map->low;
   invoke_callback(map->callback, offset, len, false); // prepare data to read
   word_t ret = host_read(map->space + offset, len);
@@ -67,6 +67,9 @@ word_t map_read(paddr_t addr, int len, IOMap *map) {
 void map_write(paddr_t addr, int len, word_t data, IOMap *map) {
   assert(len >= 1 && len <= 8);
   check_bound(map, addr);
+#ifdef CONFIG_DTRACE
+	Log("Write %d bytes data %#x to device %s", len, data, map->name);
+#endif
   paddr_t offset = addr - map->low;
   host_write(map->space + offset, len, data);
   invoke_callback(map->callback, offset, len, true);
