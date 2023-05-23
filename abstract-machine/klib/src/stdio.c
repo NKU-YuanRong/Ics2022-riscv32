@@ -41,10 +41,7 @@ static char* get_char(char* p, va_list *ap) {
 	return p;
 }
 
-int printf(const char *fmt, ...) {
-	char out[1024];
-	va_list ap;
-	va_start(ap, fmt);
+int get_result(char *out, const char *fmt, va_list ap) {
 	char* p = (char*)out;
 	while (*fmt) {
 		if (*fmt == '%') {
@@ -67,9 +64,17 @@ int printf(const char *fmt, ...) {
 		}
 	}
 	*p++ = '\0';
+	return (uint32_t)p - (uint32_t)out - 1;
+}
+
+int printf(const char *fmt, ...) {
+	char out[1024];
+	va_list ap;
+	va_start(ap, fmt);
+	int len = get_result(out, fmt, ap);
 	va_end(ap);
 	putstr(out);
-	return (int)(p - out);
+	return len;
 }
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
@@ -79,30 +84,9 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 int sprintf(char *out, const char *fmt, ...) {
 	va_list ap;
 	va_start(ap, fmt);
-    char* p = (char*)out;
-	while (*fmt) {
-		if (*fmt == '%') {
-			fmt++;
-			switch (*fmt) {
-				case 'd': 
-					p = get_int(p, &ap);
-					break;
-				case 's': 
-					p = get_string(p, &ap);
-					break;
-				case 'c':
-					p = get_char(p, &ap);
-					break;
-			}
-			fmt++;
-		}
-		else {
-			*p++ = *fmt++;
-		}
-	}
-	*p++ = '\0';
+	int len = get_result(out, fmt, ap);
 	va_end(ap);
-	return (int)(p - out);
+	return len;
   //panic("Not implemented");
 }
 
