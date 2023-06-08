@@ -19,8 +19,19 @@
 #include <common.h>
 
 typedef struct {
+  // CSR registers
+  vaddr_t mepc;
+  word_t mstatus;
+  word_t mcause;
+
+  // Other registers
+  vaddr_t mtvec;
+} riscv32_System_Registers;
+
+typedef struct {
   word_t gpr[32];
   vaddr_t pc;
+  riscv32_System_Registers sr;
 } riscv32_CPU_state;
 
 // decode
