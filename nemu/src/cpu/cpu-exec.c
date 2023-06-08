@@ -134,11 +134,8 @@ void cpu_exec(uint64_t n) {
     case NEMU_ABORT:
       #ifdef CONFIG_ITRACE_COND
       printf(ANSI_FMT("Nearest %d lines instructions\n", ANSI_FG_RED), RB_LINES);
-	    // int i=RB_INDEX % RB_LINES;
-      // for (int i = 0; i < RB_INDEX; i++) 
-      //   printf(ANSI_FMT("%s\n", ANSI_FG_RED), ring_buffer[i%RB_LINES]);
       for (int i = 0; i < RB_LINES; i++) 
-        printf("111");
+        printf(ANSI_FMT("%s\n", ANSI_FG_RED), ring_buffer[i%RB_LINES]);
       #endif
 
     case NEMU_END:
