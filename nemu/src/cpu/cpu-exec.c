@@ -137,7 +137,7 @@ void cpu_exec(uint64_t n) {
 	    // int i=RB_INDEX % RB_LINES;
       // for (int i = 0; i < RB_INDEX; i++) 
       //   printf(ANSI_FMT("%s\n", ANSI_FG_RED), ring_buffer[i%RB_LINES]);
-      for (int i = 0; i < RB_INDEX; i++) 
+      for (int i = 0; i < RB_LINES; i++) 
         printf("111");
       #endif
 
