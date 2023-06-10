@@ -56,10 +56,19 @@ static char* get_hex(char* p, va_list *ap) {
 		}
 	}
 	return p;
-	// for (len = 0; value != 0 ; value >>= 4, ++len)
-	// 	buffer[len] = HEX_CHARACTERS[value & 0xF];
-	// for (int k = len - 1; k >= 0; --k)
-	// 	append(buffer[k]);
+}
+
+static char* get_point(char* p, va_list *ap) {
+	uint32_t pointer = va_arg(*ap, uint32_t);
+	for (; pointer != 0; pointer /= 16) {
+		if (pointer % 16 < 10) {
+			*p++ = pointer % 16 + '0';
+		}
+		else {
+			*p++ = pointer % 16 - 10 + 'A';
+		}
+	}
+	return p;
 }
 
 int get_result(char *out, size_t n, const char *fmt, va_list ap) {
@@ -78,6 +87,9 @@ int get_result(char *out, size_t n, const char *fmt, va_list ap) {
 					break;
 				case 'c':
 					p = get_char(p, &ap);
+					break;
+				case 'p':
+					p = get_point(p, &ap);
 					break;
 				case 'x':
 					p = get_hex(p, &ap);
