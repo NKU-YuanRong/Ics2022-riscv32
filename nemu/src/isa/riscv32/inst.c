@@ -20,10 +20,10 @@
 
 word_t *get_csr(word_t imm) {
   switch (imm) {
-    case 773: return &cpu.sr.mtvec;
-    case 768: return &cpu.sr.mstatus;
-    case 833: return &cpu.sr.mepc;
-    case 834: return &cpu.sr.mcause;
+    case 0x305: return &cpu.sr.mtvec;
+    case 0x300: return &cpu.sr.mstatus;
+    case 0x341: return &cpu.sr.mepc;
+    case 0x342: return &cpu.sr.mcause;
     default: Log("Invalid csr code!"); assert(0);
   }
 }
