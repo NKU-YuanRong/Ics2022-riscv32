@@ -133,14 +133,14 @@ int sprintf(char *out, const char *fmt, ...) {
 int snprintf(char *out, size_t n, const char *fmt, ...) {
 	va_list ap;
 	va_start(ap, fmt);
-	int len = get_result(out, n, fmt, ap);
+	get_result(out, n, fmt, ap);
 	va_end(ap);
-	return len;
+	return n;
 }
 
 int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
-  	int len = get_result(out, n, fmt, ap);
-	return len;
+  	get_result(out, n, fmt, ap);
+	return n;
 }
 
 #endif
