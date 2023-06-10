@@ -41,6 +41,27 @@ static char* get_char(char* p, va_list *ap) {
 	return p;
 }
 
+static char* get_hex(char* p, va_list *ap) {
+	unsigned int value = va_arg(*ap, unsigned int);
+	if(value == 0){
+		*p++ = '0';
+		return p;
+	}
+	for (; value != 0; value /= 16) {
+		if (value % 16 < 10) {
+			*p++ = value % 16 + '0';
+		}
+		else {
+			*p++ = value % 16 - 10 + 'A';
+		}
+	}
+	return p;
+	// for (len = 0; value != 0 ; value >>= 4, ++len)
+	// 	buffer[len] = HEX_CHARACTERS[value & 0xF];
+	// for (int k = len - 1; k >= 0; --k)
+	// 	append(buffer[k]);
+}
+
 int get_result(char *out, size_t n, const char *fmt, va_list ap) {
 	char* p = (char*)out;
 	while (*fmt) {
@@ -57,6 +78,9 @@ int get_result(char *out, size_t n, const char *fmt, va_list ap) {
 					break;
 				case 'c':
 					p = get_char(p, &ap);
+					break;
+				case 'x':
+					p = get_hex(p, &ap);
 					break;
 			}
 			fmt++;
