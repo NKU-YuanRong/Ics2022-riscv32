@@ -108,7 +108,7 @@ int get_result(char *out, size_t n, const char *fmt, va_list ap) {
 }
 
 int printf(const char *fmt, ...) {
-	char out[1024];
+	char out[2048];
 	va_list ap;
 	va_start(ap, fmt);
 	int len = get_result(out, -1, fmt, ap);
@@ -118,8 +118,7 @@ int printf(const char *fmt, ...) {
 }
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
-  	int len = get_result(out, -1, fmt, ap);
-	return len;
+  	return get_result(out, -1, fmt, ap);
 }
 
 int sprintf(char *out, const char *fmt, ...) {
