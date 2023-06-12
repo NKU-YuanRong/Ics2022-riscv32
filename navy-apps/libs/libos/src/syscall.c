@@ -62,12 +62,25 @@ int _open(const char *path, int flags, mode_t mode) {
 }
 
 int _write(int fd, void *buf, size_t count) {
-  _exit(SYS_write);
-  return 0;
+  int ret = _syscall_(SYS_write, fd, (intptr_t)buf, count);
+  return ret;
 }
 
+extern char _end;
+static void* program_end = NULL;
+
 void *_sbrk(intptr_t increment) {
-  return (void *)-1;
+  if (program_end == NULL) {
+    program_end = &_end;
+  }
+  void *res = program_end;
+  
+  int ret = _syscall_(SYS_brk, (intptr_t)program_end + increment, 0, 0);
+  if (ret == 0)
+    program_end = program_end + increment;
+  else
+    return (void *)-1;
+  return res;
 }
 
 int _read(int fd, void *buf, size_t count) {

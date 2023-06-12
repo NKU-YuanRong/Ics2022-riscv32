@@ -3,6 +3,7 @@
 #include <fs.h>
 #include <proc.h>
 
+/*
 enum {
   SYS_exit,
   SYS_yield,
@@ -24,9 +25,16 @@ enum {
   SYS_wait,
   SYS_times,
   SYS_gettimeofday
-};
+};*/
 
 extern void naive_uload(void *pcb, const char *filename);
+
+int sys_write(Context *c){
+	for (int i = 0; i < c->GPR4; ++i){
+    putch(*(((char *)c->GPR3) + i));
+  }
+  return c->GPR4;
+}
 
 void do_syscall(Context *c) {
   uintptr_t a[4];
@@ -38,7 +46,8 @@ void do_syscall(Context *c) {
   switch (a[0]) {
     case SYS_yield: yield(); break;
     case SYS_exit: Log("sys_call:exit"); halt(0); break;
-    // case SYS_write: c->GPRx = fs_write(a[1], (void*)a[2], a[3]); break;
+    case SYS_write: c->GPRx = sys_write(c); break;// c->GPRx = fs_write(a[1], (void*)a[2], a[3]); break;
+    case SYS_brk: c->GPRx = 0; break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
 }
