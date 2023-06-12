@@ -59,12 +59,11 @@ int fs_open(const char *path){
   if(strcmp(path, file_table[FD_EVENT].name) == 0) return FD_EVENT;
   if(strcmp(path, file_table[FD_DISPINFO].name) == 0) return FD_DISPINFO;
   if(strcmp(path, file_table[FD_FB].name) == 0) return FD_FB;
-
   	for (int i = FD_FB + 1; i < FD_SIZE; i++) {
     if (strcmp(path, file_table[i].name) == 0) {
-      // file_table[i].open_offset = 0;
-      file_table[i].read=*ramdisk_read;
-      file_table[i].write=*ramdisk_write;
+      file_table[i].open_offset = 0;
+      // file_table[i].read=*ramdisk_read;
+      // file_table[i].write=*ramdisk_write;
       return i;
     }
   }
