@@ -63,8 +63,8 @@ int fs_open(const char *path){
   	for (int i = FD_FB + 1; i < FD_SIZE; i++) {
     if (strcmp(path, file_table[i].name) == 0) {
       file_table[i].open_offset = 0;
-      file_table[i].read = *ramdisk_read;
-      file_table[i].write = *ramdisk_write;
+      // file_table[i].read = *ramdisk_read;
+      // file_table[i].write = *ramdisk_write;
       return i;
     }
   }
