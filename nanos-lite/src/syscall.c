@@ -30,18 +30,14 @@ enum {
 extern void naive_uload(void *pcb, const char *filename);
 
 int sys_write(Context *c){
-  for (int i = 0; i < c->GPR4; ++i){
+  if (c->GPR2 == 1 || c->GPR2 == 2){
+    for (int i = 0; i < c->GPR4; ++i){
       putch(*(((char *)c->GPR3) + i));
     }
-  return c->GPR4;
-	// if (c->GPR2 == 1 || c->GPR2 == 2){
-  //   for (int i = 0; i < c->GPR4; ++i){
-  //     putch(*(((char *)c->GPR3) + i));
-  //   }
-  //   return c->GPR4;
-  // }
-  // else  
-  //   return fs_write(c->GPR2, (void *)c->GPR3, c->GPR4);
+    return c->GPR4;
+  }
+  else  
+    return fs_write(c->GPR2, (void *)c->GPR3, c->GPR4);
 }
 
 void do_syscall(Context *c) {
