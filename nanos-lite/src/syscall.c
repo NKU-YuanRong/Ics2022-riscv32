@@ -30,14 +30,18 @@ enum {
 extern void naive_uload(void *pcb, const char *filename);
 
 int sys_write(Context *c){
-	if (c->GPR2 == 1 || c->GPR2 == 2){
-    for (int i = 0; i < c->GPR4; ++i){
+  for (int i = 0; i < c->GPR4; ++i){
       putch(*(((char *)c->GPR3) + i));
     }
-    return c->GPR4;
-  }
-  else  
-    return fs_write(c->GPR2, (void *)c->GPR3, c->GPR4);
+  return c->GPR4;
+	// if (c->GPR2 == 1 || c->GPR2 == 2){
+  //   for (int i = 0; i < c->GPR4; ++i){
+  //     putch(*(((char *)c->GPR3) + i));
+  //   }
+  //   return c->GPR4;
+  // }
+  // else  
+  //   return fs_write(c->GPR2, (void *)c->GPR3, c->GPR4);
 }
 
 void do_syscall(Context *c) {
@@ -54,8 +58,8 @@ void do_syscall(Context *c) {
     case SYS_open: c->GPRx = fs_open((const char*)(a[1])); break;
     case SYS_lseek: c->GPRx = fs_lseek(a[1], a[2], a[3]); break;
     case SYS_read: c->GPRx = fs_read(a[1], (void*)(a[2]), a[3]); break;
-    // case SYS_write: c->GPRx = sys_write(c); break;
-    case SYS_write: c->GPRx = fs_write(a[1], (void*)a[2], a[3]); break;
+    case SYS_write: c->GPRx = sys_write(c); break;
+    // case SYS_write: c->GPRx = fs_write(a[1], (void*)a[2], a[3]); break;
     case SYS_close: c->GPRx = fs_close(a[1]); break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
