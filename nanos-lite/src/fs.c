@@ -78,17 +78,29 @@ size_t fs_read(int fd,void *buf,size_t len){
   // file_table[fd].open_offset += count;
   // return count;
 
-  Finfo *info = &file_table[fd];
+  // Finfo *info = &file_table[fd];
+  // size_t real_len;
+  // if (info->read){
+  //   real_len = info->read(buf, info->open_offset, len);
+  // }
+  // else {
+  //   real_len = info->open_offset + len <= info->size ?
+  //   len : info->size - info->open_offset;
+  //   ramdisk_read(buf, info->disk_offset + info->open_offset, real_len);
+  // }
+  // info->open_offset += real_len;
+  // return real_len;
+
   size_t real_len;
-  if (info->read){
-    real_len = info->read(buf, info->open_offset, len);
+  if (file_table[fd].read){
+    real_len = file_table[fd].read(buf, file_table[fd].open_offset, len);
   }
   else {
-    real_len = info->open_offset + len <= info->size ?
-    len : info->size - info->open_offset;
-    ramdisk_read(buf, info->disk_offset + info->open_offset, real_len);
+    real_len = file_table[fd].open_offset + len <= file_table[fd].size ?
+    len : file_table[fd].size - file_table[fd].open_offset;
+    ramdisk_read(buf, file_table[fd].disk_offset + file_table[fd].open_offset, real_len);
   }
-  info->open_offset += real_len;
+  file_table[fd].open_offset += real_len;
   return real_len;
 
   // size_t actual_len;
