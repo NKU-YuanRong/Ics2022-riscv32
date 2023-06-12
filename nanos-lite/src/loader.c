@@ -13,9 +13,10 @@ extern size_t ramdisk_read(void *buf, size_t offset, size_t len);
 extern size_t ramdisk_write(const void *buf, size_t offset, size_t len);
 extern size_t get_ramdisk_size();
 static uintptr_t loader(PCB *pcb, const char *filename) {
-  Elf32_Ehdr header;
+  Elf_Ehdr header;
 	int fd = fs_open(filename);
-	fs_read(fd, &header, sizeof(Elf32_Ehdr));
+  fs_lseek(fd, 0, SEEK_SET);
+	fs_read(fd, &header, sizeof(Elf_Ehdr));
   assert(*(uint32_t*)header.e_ident==0x464c457f);
 
   Elf_Phdr Phdr;
