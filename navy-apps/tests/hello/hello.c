@@ -3,9 +3,9 @@
 
 int main() {
   write(1, "Hello World!\n", 13);
-  int i = 2;
+  int i = 2, n = 0;
   volatile int j = 0;
-  while (1) {
+  while (n++ < 10) {
     j ++;
     if (j == 10000) {
       printf("Hello World from Navy-apps for the %dth time!\n", i ++);
