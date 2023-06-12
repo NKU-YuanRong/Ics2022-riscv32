@@ -43,13 +43,10 @@ static Finfo file_table[] __attribute__((used)) = {
 };
 
 void init_fs() {
-  // TODO: initialize the size of /dev/fb
   AM_GPU_CONFIG_T gconf = io_read(AM_GPU_CONFIG);
   file_table[FD_FB].size = gconf.width * gconf.height * 4;
 }
 
-//begin
-//进行一些预处理
 extern size_t ramdisk_read(void *, size_t, size_t);
 extern size_t ramdisk_write(const void*, size_t, size_t);
 const int FD_SIZE = sizeof(file_table) / sizeof(file_table[0]);
@@ -99,27 +96,6 @@ size_t fs_lseek(int fd, size_t offset, int whence){
 }
 
 size_t fs_write(int fd,const void *buf,size_t len){
-  // if(fd>FD_FB && (file_table[fd].open_offset+count >= file_table[fd].size)){
-  //   count=file_table[fd].size-file_table[fd].open_offset;
-  //   if(count<0)count=0;
-  // }
-  // count = file_table[fd].write(buf, file_table[fd].disk_offset + file_table[fd].open_offset, count);
-  // file_table[fd].open_offset += count;
-  // return count;
-
-  // Finfo *info = &file_table[fd];
-  // size_t real_len;
-  
-  // if (info->write){
-  //   real_len = info->write(buf, info->open_offset, len);
-  // }
-  // else {
-  //   assert(info->open_offset + len <= info->size);
-  //   ramdisk_write(buf, info->disk_offset + info->open_offset, len);
-  //   real_len = len;
-  // }
-  // info->open_offset += real_len;
-  // return real_len;
   size_t actual_len;
   if (file_table[fd].open_offset + len > file_table[fd].size) {
     panic("Wrong writing!");
