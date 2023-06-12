@@ -50,10 +50,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   Elf32_Ehdr header;
 	int fd = fs_open(filename);
 	fs_read(fd, &header, sizeof(Elf32_Ehdr));
-	if (*(uint32_t *)header.e_ident == (uint32_t)0X464C457F){
-		Log("header.e_ident=%x,it should be 0x464c457f",*(uint32_t *)header.e_ident );
-    //assert(0);
-	}
+  assert(*(uint32_t*)header.e_ident==0x464c457f);
   
 	Elf32_Phdr pro_header[8];
 
