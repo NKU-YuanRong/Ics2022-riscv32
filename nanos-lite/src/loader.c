@@ -13,13 +13,13 @@ extern size_t ramdisk_read(void *buf, size_t offset, size_t len);
 extern size_t ramdisk_write(const void *buf, size_t offset, size_t len);
 extern size_t get_ramdisk_size();
 static uintptr_t loader(PCB *pcb, const char *filename) {
-  Elf32_Ehdr header;
+  Elf_Ehdr header;
 	int fd = fs_open(filename);
-	fs_read(fd, &header, sizeof(Elf32_Ehdr));
+	fs_read(fd, &header, sizeof(Elf_Ehdr));
   Log("header.e_ident=%x,it should be 0x464c457f",*(uint32_t *)header.e_ident );
   assert(*(uint32_t*)header.e_ident==0x464c457f);
 
-  Elf32_Phdr Phdr;
+  Elf_Phdr Phdr;
   for (int i = 0; i < header.e_phnum; i++) {
     fs_lseek(fd, header.e_phoff + i*header.e_phentsize, SEEK_SET);
     fs_read(fd, &Phdr, sizeof(Phdr));
