@@ -56,17 +56,6 @@ const int FD_SIZE = sizeof(file_table) / sizeof(file_table[0]);
 
 
 int fs_open(const char *path){
-  // if(strcmp(pathname,file_table[FD_EVENT].name)==0)return FD_EVENT;
-  // else if(strcmp(pathname,file_table[FD_DISPINFO].name)==0)return FD_DISPINFO;
-  // else if(strcmp(pathname,file_table[FD_FB].name)==0)return FD_FB;
-  // for(int i=FD_FB+1;i<FD_SIZE;i++){
-  //   if(strcmp(pathname,file_table[i].name)==0){
-  //     file_table[i].read=*ramdisk_read;
-  //     file_table[i].write=*ramdisk_write;
-  //     return i;
-  //   }
-  // }
-  // return -1;
   if(strcmp(path, file_table[FD_EVENT].name) == 0) return FD_EVENT;
   if(strcmp(path, file_table[FD_DISPINFO].name) == 0) return FD_DISPINFO;
   if(strcmp(path, file_table[FD_FB].name) == 0) return FD_FB;
@@ -74,6 +63,8 @@ int fs_open(const char *path){
   	for (int i = FD_FB + 1; i < FD_SIZE; i++) {
     if (strcmp(path, file_table[i].name) == 0) {
       file_table[i].open_offset = 0;
+      file_table[i].read = *ramdisk_read;
+      file_table[i].write = *ramdisk_write;
       return i;
     }
   }
@@ -105,35 +96,14 @@ size_t fs_read(int fd,void *buf,size_t len){
 }
 
 size_t fs_lseek(int fd, size_t offset, int whence){
-  // switch(whence){
-  //   case SEEK_SET:file_table[fd].open_offset  = offset;                     break;
-  //   case SEEK_CUR:file_table[fd].open_offset += offset;                     break;
-  //   case SEEK_END:file_table[fd].open_offset = file_table[fd].size + offset;break;
-  // }
-  // return file_table[fd].open_offset;
-
-  Finfo *info = &file_table[fd];
-  switch(whence){
-    case SEEK_CUR:
-      assert(info->open_offset + offset <= info->size);
-      info->open_offset += offset;
-      break;
-
-    case SEEK_SET:
-      assert(offset <= info->size);
-      info->open_offset = offset;
-      break;
-
-    case SEEK_END:
-      assert(offset <= info->size);
-      info->open_offset = info->size + offset;
-      break;
-
-    default:
-      assert(0);
+  switch(whence) {
+    case SEEK_SET: file_table[fd].open_offset = offset; break;
+    case SEEK_CUR: file_table[fd].open_offset += offset; break;
+    case SEEK_END: file_table[fd].open_offset = file_table[fd].size + offset; break;
+    default: assert(0);
   }
 
-  return info->open_offset;
+  return file_table[fd].open_offset;
 }
 
 size_t fs_write(int fd,const void *buf,size_t len){
