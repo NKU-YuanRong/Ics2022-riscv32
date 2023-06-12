@@ -69,48 +69,6 @@ int fs_open(const char *path){
 }
 
 size_t fs_read(int fd,void *buf,size_t len){
-  // //处理count
-  // if(fd>FD_FB && (file_table[fd].open_offset+count >= file_table[fd].size)){
-  //   count=file_table[fd].size-file_table[fd].open_offset;
-  //   if(count<0)count=0;
-  // }
-  // count = file_table[fd].read(buf, file_table[fd].disk_offset + file_table[fd].open_offset, count);
-  // file_table[fd].open_offset += count;
-  // return count;
-
-  // Finfo *info = &file_table[fd];
-  // size_t real_len;
-  // if (info->read){
-  //   real_len = info->read(buf, info->open_offset, len);
-  // }
-  // else {
-  //   real_len = info->open_offset + len <= info->size ?
-  //   len : info->size - info->open_offset;
-  //   ramdisk_read(buf, info->disk_offset + info->open_offset, real_len);
-  // }
-  // info->open_offset += real_len;
-  // return real_len;
-
-  // size_t actual_len;
-  // if (file_table[fd].open_offset + len > file_table[fd].size) {
-  //   actual_len = file_table[fd].size - file_table[fd].open_offset;
-  // }
-  // else {
-  //   actual_len = len;
-  // }
-
-  // actual_len = file_table[fd].open_offset + len <= file_table[fd].size ?
-  // len : file_table[fd].size - file_table[fd].open_offset;
-
-  // if (file_table[fd].read){
-  //   actual_len = file_table[fd].read(buf, file_table[fd].open_offset, len);
-  // }
-  // else {
-  //   ramdisk_read(buf, file_table[fd].disk_offset + file_table[fd].open_offset, actual_len);
-  // }
-  // file_table[fd].open_offset += actual_len;
-  // return actual_len;
-
   size_t actual_len;
   if (file_table[fd].open_offset + len > file_table[fd].size) {
     actual_len = file_table[fd].size - file_table[fd].open_offset;
@@ -149,19 +107,36 @@ size_t fs_write(int fd,const void *buf,size_t len){
   // file_table[fd].open_offset += count;
   // return count;
 
-  Finfo *info = &file_table[fd];
-  size_t real_len;
+  // Finfo *info = &file_table[fd];
+  // size_t real_len;
   
-  if (info->write){
-    real_len = info->write(buf, info->open_offset, len);
+  // if (info->write){
+  //   real_len = info->write(buf, info->open_offset, len);
+  // }
+  // else {
+  //   assert(info->open_offset + len <= info->size);
+  //   ramdisk_write(buf, info->disk_offset + info->open_offset, len);
+  //   real_len = len;
+  // }
+  // info->open_offset += real_len;
+  // return real_len;
+  size_t actual_len;
+  if (file_table[fd].open_offset + len > file_table[fd].size) {
+    panic("Wrong writing!");
+    assert(0);
   }
   else {
-    assert(info->open_offset + len <= info->size);
-    ramdisk_write(buf, info->disk_offset + info->open_offset, len);
-    real_len = len;
+    actual_len = len;
   }
-  info->open_offset += real_len;
-  return real_len;
+
+  if (file_table[fd].write) {
+    file_table[fd].write(buf, file_table[fd].open_offset, actual_len);
+  }
+  else {
+    ramdisk_write(buf, file_table[fd].disk_offset + file_table[fd].open_offset, actual_len);
+  }
+  file_table[fd].open_offset += actual_len;
+  return actual_len;
 }
 
 int fs_close(int fd){
