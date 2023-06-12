@@ -7,10 +7,10 @@
 enum {SEEK_SET, SEEK_CUR, SEEK_END};
 #endif
 
-int fs_open(const char *pathname);
-size_t fs_lseek(int fd, size_t offset, int whence);
-size_t fs_read(int fd,void *buf,size_t count);
-size_t fs_write(int fd,const void *buf,size_t count);
-int fs_close(int fd);
+int fs_open(const char *);
+size_t fs_lseek(int, size_t, int);
+size_t fs_read(int, void *, size_t);
+size_t fs_write(int, const void *, size_t);
+int fs_close(int);
 
 #endif
