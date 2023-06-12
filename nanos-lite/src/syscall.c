@@ -1,5 +1,6 @@
 #include <common.h>
 #include "syscall.h"
+#include <fs.h>
 #include <proc.h>
 
 enum {
@@ -37,6 +38,7 @@ void do_syscall(Context *c) {
   switch (a[0]) {
     case SYS_yield: yield(); break;
     case SYS_exit: Log("sys_call:exit"); halt(0); break;
+    // case SYS_write: c->GPRx = fs_write(a[1], (void*)a[2], a[3]); break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
 }
