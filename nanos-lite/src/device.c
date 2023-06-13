@@ -31,25 +31,51 @@ size_t events_read(void *buf, size_t offset, size_t len) {
   return actual_len;
 }
 
+// size_t dispinfo_read(void *buf, size_t offset, size_t len) {
+//   int actual_len = snprintf((char*)buf, len, 
+//     "screen width: %d, height: %d\n", 
+//     io_read(AM_GPU_CONFIG).width, 
+//     io_read(AM_GPU_CONFIG).height);
+//   // Log("display infomation: %s", (char*)buf);
+//   return actual_len;
+// }
+
+// size_t fb_write(const void *buf, size_t offset, size_t len) {
+//   int x, y, w, h, actual_len;
+//   w = io_read(AM_GPU_CONFIG).width;
+//   h = io_read(AM_GPU_CONFIG).height;
+//   x = (offset / 4) % w;
+//   y = (offset / 4) / w;
+//   actual_len = offset + len > w * h * 4 ? w * h * 4 - offset : len;
+
+//   io_write(AM_GPU_FBDRAW, x, y, (uint32_t*)buf, actual_len / 4, 1, true);
+//   return actual_len;
+// }
+
 size_t dispinfo_read(void *buf, size_t offset, size_t len) {
-  int actual_len = snprintf((char*)buf, len, 
-    "screen width: %d, height: %d\n", 
-    io_read(AM_GPU_CONFIG).width, 
-    io_read(AM_GPU_CONFIG).height);
-  // Log("display infomation: %s", (char*)buf);
-  return actual_len;
+  if (offset > 0){
+    return 0;
+  }
+
+  int w = io_read(AM_GPU_CONFIG).width;
+  int h = io_read(AM_GPU_CONFIG).height;
+
+  int ret = snprintf(buf, len, "WIDTH:%d\nHEIGHT:%d", w, h);
+  Log("%s", (char *)buf);
+  if (ret >= len){
+    assert(0);
+  }
+  return ret + 1;
 }
 
 size_t fb_write(const void *buf, size_t offset, size_t len) {
-  int x, y, w, h, actual_len;
-  w = io_read(AM_GPU_CONFIG).width;
-  h = io_read(AM_GPU_CONFIG).height;
-  x = (offset / 4) % w;
-  y = (offset / 4) / w;
-  actual_len = offset + len > w * h * 4 ? w * h * 4 - offset : len;
-
-  io_write(AM_GPU_FBDRAW, x, y, (uint32_t*)buf, actual_len / 4, 1, true);
-  return actual_len;
+  int32_t w = io_read(AM_GPU_CONFIG).width;
+	uint32_t h = io_read(AM_GPU_CONFIG).height;
+  uint32_t x = (offset/4)%w;
+  uint32_t y = (offset/4)/w;
+  if(offset+len > w*h*4) len = w*h*4 - offset;
+  io_write(AM_GPU_FBDRAW, x, y, (uint32_t*)buf, len/4, 1, true);
+  return len;
 }
 
 void init_device() {
