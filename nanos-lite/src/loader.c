@@ -16,7 +16,6 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   Elf_Ehdr header;
 	int fd = fs_open(filename);
 	fs_read(fd, &header, sizeof(Elf_Ehdr));
-  Log("header.e_ident=%x,it should be 0x464c457f",*(uint32_t *)header.e_ident );
   assert(*(uint32_t*)header.e_ident==0x464c457f);
 
   Elf_Phdr Phdr;
