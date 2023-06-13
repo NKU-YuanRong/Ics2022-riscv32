@@ -31,10 +31,10 @@ enum {
 extern void naive_uload(void *pcb, const char *filename);
 
 int sys_gettimeofday(Context *c){
-  struct timeval *tv = (struct timeval *)c->GPR2;
-  __uint64_t time = io_read(AM_TIMER_UPTIME).us;
-  tv->tv_usec = (time % 1000000);
-  tv->tv_sec = (time / 1000000);
+  struct timeval *value = (struct timeval *)c->GPR2;
+  // __uint64_t time = io_read(AM_TIMER_UPTIME).us;
+  value->tv_usec = (io_read(AM_TIMER_UPTIME).us % 1000000);
+  value->tv_sec = (io_read(AM_TIMER_UPTIME).us / 1000000);
 	return 0;
 }
 
