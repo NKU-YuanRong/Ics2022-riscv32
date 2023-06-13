@@ -27,10 +27,8 @@ size_t events_read(void *buf, size_t offset, size_t len) {
   if (ev.keycode == AM_KEY_NONE) {
     return 0;
   }
-  else {
-    actual_len = sprintf(buf, "%s %s\n", ev.keydown ? "kd": "ku", keyname[ev.keycode]);
-    Log("read over! actual len: %d", actual_len);
-  }
+  actual_len = sprintf(buf, "%s %s\n", ev.keydown ? "kd": "ku", keyname[ev.keycode]);
+  Log("read over! actual len: %d", actual_len);
   return actual_len;
 }
 
