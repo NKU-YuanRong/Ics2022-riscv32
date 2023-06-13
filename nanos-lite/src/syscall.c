@@ -30,8 +30,14 @@ enum {
 
 extern void naive_uload(void *pcb, const char *filename);
 
-int sys_gettimeofday(Context *c){
-  struct timeval *value = (struct timeval *)c->GPR2;
+// int sys_gettimeofday(Context *c){
+//   struct timeval *value = (struct timeval *)c->GPR2;
+//   value->tv_usec = (io_read(AM_TIMER_UPTIME).us % 1000000);
+//   value->tv_sec = (io_read(AM_TIMER_UPTIME).us / 1000000);
+// 	return 0;
+// }
+int sys_gettimeofday(struct timeval *value){
+  // struct timeval *value = (struct timeval *)c->GPR2;
   value->tv_usec = (io_read(AM_TIMER_UPTIME).us % 1000000);
   value->tv_sec = (io_read(AM_TIMER_UPTIME).us / 1000000);
 	return 0;
@@ -51,14 +57,6 @@ int sys_write(Context *c) {
       ret = fs_write(fd, (void *)c->GPR3, c->GPR4);
   }
   return ret;
-  // if (c->GPR2 == 1 || c->GPR2 == 2){
-  //   for (int i = 0; i < c->GPR4; ++i){
-  //     putch(*(((char *)c->GPR3) + i));
-  //   }
-  //   return c->GPR4;
-  // }
-  // else  
-  //   return fs_write(c->GPR2, (void *)c->GPR3, c->GPR4);
 }
 
 void do_syscall(Context *c) {
@@ -77,7 +75,7 @@ void do_syscall(Context *c) {
     case SYS_read: c->GPRx = fs_read(a[1], (void*)(a[2]), a[3]); break;
     case SYS_write: c->GPRx = sys_write(c); break;
     case SYS_close: c->GPRx = fs_close(a[1]); break;
-    case SYS_gettimeofday: c->GPRx = sys_gettimeofday(c); break;
+    case SYS_gettimeofday: c->GPRx = sys_gettimeofday((struct timeval *)a[1]); break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
 }
