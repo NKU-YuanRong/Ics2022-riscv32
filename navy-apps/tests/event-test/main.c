@@ -8,9 +8,6 @@ int main() {
     if (NDL_PollEvent(buf, sizeof(buf))) {
       printf("receive event: %s\n", buf);
     }
-    else {
-      printf("not receive event! buf: %s\n", buf);
-    }
   }
   return 0;
 }
