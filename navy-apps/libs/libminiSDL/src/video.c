@@ -7,12 +7,79 @@
 void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect) {
   assert(dst && src);
   assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
+  int ws,hs,xs,ys;
+  int wd,hd,xd,yd;
+  if(srcrect==NULL){
+    ws=src->w;hs=src->h;xs=0;ys=0;
+  }
+  else{
+    ws=srcrect->w;hs=srcrect->h;xs=srcrect->x;ys=srcrect->y;
+  }
+  if(dstrect==NULL){
+    wd=dst->w;hd=dst->h;xd=0;yd=0;
+  }
+  else{
+    wd=dstrect->w;hd=dstrect->h;xd=dstrect->x;yd=dstrect->y;
+  }
+  uint8_t* colord=dst->pixels,*colors=src->pixels;
+  uint32_t width=dst->format->BytesPerPixel;
+  for(int i=0;i<hs;i++)
+    memcpy(colord+width*((i+yd)*dst->w+xd),colors+width*((i+ys)*src->w+xs),width*ws);
 }
 
 void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
+  // pause();
+  int x,y,w,h;
+  if(dstrect==NULL){
+    x=y=0;
+    w=dst->w;
+    h=dst->h;
+  }
+  else {x=dstrect->x;y=dstrect->y;w=dstrect->w;h=dstrect->h;}
+  
+  if(dst->format->BitsPerPixel == 32)
+  {
+    uint32_t * value = (uint32_t*)dst->pixels;
+    for(int i = 0;i < h;i ++)
+      for(int j = 0;j < w;j ++)
+      {
+        value[(i+y)*dst->w+j+x] = color;
+      }
+  } 
+  else if(dst->format->BitsPerPixel == 8) {
+  //assert(0);
+    for(int i = 0;i < h;i ++)
+      for(int j = 0;j < w;j ++)
+        ((uint8_t*)dst->pixels)[(i+y)*dst->w+j+x] = (uint8_t)color;
+  } 
 }
 
 void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
+  if(w == 0 || h == 0) {
+    w = s->w;
+    h = s->h;
+  }
+  
+  if (x + w > s->w) { w = s->w - x; }
+  if (y + h > s->h) { h = s->h - y; }
+  
+  if(s->format->BitsPerPixel == 32)
+    NDL_DrawRect((uint32_t*)s->pixels,x,y,w,h);
+  else{
+    SDL_Color *colors=s->format->palette->colors;
+    uint8_t* pixel=s->pixels;
+    uint32_t* pixelbuf=malloc(sizeof(uint32_t)*w*h);
+    for(int i=0;i<h;i++){
+      for(int j=0;j<w;j++){
+        uint8_t r=colors[pixel[(i+y)*s->w+j+x]].r;
+        uint8_t g=colors[pixel[(i+y)*s->w+j+x]].g;
+        uint8_t b=colors[pixel[(i+y)*s->w+j+x]].b;
+        pixelbuf[i*w+j]=((r<<16)|(g<<8)|b);
+      }
+    }
+    NDL_DrawRect(pixelbuf,x,y,w,h);
+    free(pixelbuf);
+  }
 }
 
 // APIs below are already implemented.
