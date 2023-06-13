@@ -36,7 +36,7 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
     "screen width: %d, height: %d\n", 
     io_read(AM_GPU_CONFIG).width, 
     io_read(AM_GPU_CONFIG).height);
-  Log("display infomation: %s", (char*)buf);
+  // Log("display infomation: %s", (char*)buf);
   return actual_len;
 }
 
