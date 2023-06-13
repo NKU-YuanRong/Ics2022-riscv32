@@ -2,6 +2,7 @@
 #include "syscall.h"
 #include <fs.h>
 #include <proc.h>
+#include <sys/time.h>
 
 /*
 enum {
@@ -29,7 +30,15 @@ enum {
 
 extern void naive_uload(void *pcb, const char *filename);
 
-int sys_write(Context *c){
+int sys_gettimeofday(Context *c){
+  struct timeval *tv = (struct timeval *)c->GPR2;
+  __uint64_t time = io_read(AM_TIMER_UPTIME).us;
+  tv->tv_usec = (time % 1000000);
+  tv->tv_sec = (time / 1000000);
+	return 0;
+}
+
+int sys_write(Context *c) {
   if (c->GPR2 == 1 || c->GPR2 == 2){
     for (int i = 0; i < c->GPR4; ++i){
       putch(*(((char *)c->GPR3) + i));
@@ -55,8 +64,8 @@ void do_syscall(Context *c) {
     case SYS_lseek: c->GPRx = fs_lseek(a[1], a[2], a[3]); break;
     case SYS_read: c->GPRx = fs_read(a[1], (void*)(a[2]), a[3]); break;
     case SYS_write: c->GPRx = sys_write(c); break;
-    // case SYS_write: c->GPRx = fs_write(a[1], (void*)a[2], a[3]); break;
     case SYS_close: c->GPRx = fs_close(a[1]); break;
+    case SYS_gettimeofday: c->GPRx = sys_gettimeofday((void *)a[1]); break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
 }
