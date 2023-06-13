@@ -109,7 +109,7 @@ size_t fs_write(int fd,const void *buf,size_t len){
     file_table[fd].write(buf, file_table[fd].open_offset, actual_len);
   }
   else {
-    ramdisk_write(buf, file_table[fd].disk_offset + file_table[fd].open_offset, actual_len);
+    actual_len = ramdisk_write(buf, file_table[fd].disk_offset + file_table[fd].open_offset, actual_len);
   }
   file_table[fd].open_offset += actual_len;
   return actual_len;
