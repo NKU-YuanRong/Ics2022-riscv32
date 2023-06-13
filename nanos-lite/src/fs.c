@@ -75,13 +75,12 @@ size_t fs_read(int fd,void *buf,size_t len){
   }
 
   Log("Original len: %d", len);
-  Log("Actual len: %d", actual_len);
 
   if (file_table[fd].read) {
-    file_table[fd].read(buf, file_table[fd].open_offset, actual_len);
+    actual_len = file_table[fd].read(buf, file_table[fd].open_offset, actual_len);
   }
   else {
-    ramdisk_read(buf, file_table[fd].disk_offset + file_table[fd].open_offset, actual_len);
+    actual_len = ramdisk_read(buf, file_table[fd].disk_offset + file_table[fd].open_offset, actual_len);
   }
   file_table[fd].open_offset += actual_len;
 
