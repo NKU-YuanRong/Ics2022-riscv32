@@ -28,7 +28,6 @@ size_t events_read(void *buf, size_t offset, size_t len) {
     actual_len = 0;
   }
   else {
-    Log("events read! len: %d", len);
     actual_len = sprintf(buf, "%s %s\n", ev.keydown ? "kd": "ku", keyname[ev.keycode]);
     Log("read over! actual len: %d", actual_len);
   }
