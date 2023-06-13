@@ -5,7 +5,7 @@
 #include <NDL.h>
 
 int main(){
-  /*
+  
   NDL_Init(0);
 
   uint32_t time;
@@ -19,9 +19,9 @@ int main(){
     msec += 500;
   }
 
-  NDL_Quit();*/
+  NDL_Quit();
   
-  struct timeval dut;
+  /*struct timeval dut;
   struct timezone tz;
   
   dut.tv_sec = 0;
@@ -46,5 +46,7 @@ int main(){
         ref.tv_sec += 1;
       }
     }
-  }
+  }*/
+  
+  return 0;
 }
