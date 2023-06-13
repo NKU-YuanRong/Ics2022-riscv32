@@ -5,29 +5,12 @@
 #include <NDL.h>
 
 int main(){
-  
-  NDL_Init(0);
-
-  uint32_t time;
-  uint32_t msec = 500;
-  while (1) {
-    time = NDL_GetTicks();
-    while(time < msec) {
-      time = NDL_GetTicks();
-    }
-    printf("get 0.5s !\n");
-    msec += 500;
-  }
-
-  NDL_Quit();
-  
-  /*struct timeval dut;
+  struct timeval dut;
   struct timezone tz;
+  struct timeval ref;
   
   dut.tv_sec = 0;
   dut.tv_usec = 0;
-  
-  struct timeval ref;
   
   gettimeofday(&ref, &tz);
   ref.tv_usec = 500000;
@@ -46,7 +29,7 @@ int main(){
         ref.tv_sec += 1;
       }
     }
-  }*/
+  }
   
   return 0;
 }
