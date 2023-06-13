@@ -32,21 +32,33 @@ extern void naive_uload(void *pcb, const char *filename);
 
 int sys_gettimeofday(Context *c){
   struct timeval *value = (struct timeval *)c->GPR2;
-  // __uint64_t time = io_read(AM_TIMER_UPTIME).us;
   value->tv_usec = (io_read(AM_TIMER_UPTIME).us % 1000000);
   value->tv_sec = (io_read(AM_TIMER_UPTIME).us / 1000000);
 	return 0;
 }
 
 int sys_write(Context *c) {
-  if (c->GPR2 == 1 || c->GPR2 == 2){
-    for (int i = 0; i < c->GPR4; ++i){
-      putch(*(((char *)c->GPR3) + i));
-    }
-    return c->GPR4;
+  int fd = c->GPR2, ret = 0;
+  switch(fd) {
+    case 1:
+    case 2:
+      for (int i = 0; i < c->GPR4; i++) {
+        putch(*(((char *)c->GPR3) + i));
+      }
+      ret = c->GPR4;
+      break;
+    default:
+      ret = fs_write(fd, (void *)c->GPR3, c->GPR4);
   }
-  else  
-    return fs_write(c->GPR2, (void *)c->GPR3, c->GPR4);
+  return ret;
+  // if (c->GPR2 == 1 || c->GPR2 == 2){
+  //   for (int i = 0; i < c->GPR4; ++i){
+  //     putch(*(((char *)c->GPR3) + i));
+  //   }
+  //   return c->GPR4;
+  // }
+  // else  
+  //   return fs_write(c->GPR2, (void *)c->GPR3, c->GPR4);
 }
 
 void do_syscall(Context *c) {
