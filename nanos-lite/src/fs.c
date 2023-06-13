@@ -73,6 +73,8 @@ size_t fs_read(int fd,void *buf,size_t len){
   else {
     actual_len = len;
   }
+
+  Log("Original len: %d", len);
   Log("Actual len: %d", actual_len);
 
   if (file_table[fd].read) {

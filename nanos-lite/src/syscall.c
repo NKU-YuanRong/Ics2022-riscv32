@@ -65,7 +65,7 @@ void do_syscall(Context *c) {
     case SYS_brk: c->GPRx = 0; break;
     case SYS_open: c->GPRx = fs_open((const char*)(a[1])); break;
     case SYS_lseek: c->GPRx = fs_lseek(a[1], a[2], a[3]); break;
-    case SYS_read: c->GPRx = fs_read(a[1], (void*)(a[2]), a[3]); Log("fs_read value: %d", c->GPRx); break;
+    case SYS_read: c->GPRx = fs_read(a[1], (void*)(a[2]), a[3]); break;
     case SYS_write: c->GPRx = sys_write(c); break;
     case SYS_close: c->GPRx = fs_close(a[1]); break;
     case SYS_gettimeofday: c->GPRx = sys_gettimeofday((struct timeval *)a[1]); break;
