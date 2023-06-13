@@ -21,18 +21,20 @@ int main(){
   }
 
   NDL_Quit();*/
-  dut.tv_sec = 0;dut.tv_usec = 0;
+  dut.tv_sec = 0;
+  dut.tv_usec = 0;
+  
   struct timeval ref;
+  
   gettimeofday(&ref,&tz);
   ref.tv_usec = 500000;
-  printf("time-test starts begin = %ld\n",dut.tv_sec);
   
   while(1){
     gettimeofday(&dut,&tz);
-    //printf("%d\n",dut.tv_usec);
     if(dut.tv_sec==ref.tv_sec){
       if(ref.tv_usec==0&&ref.tv_usec<dut.tv_usec){
-        printf("sec:%ld  usec:%ld\n",ref.tv_sec,ref.tv_usec);
+        // printf("sec:%ld  usec:%ld\n",ref.tv_sec,ref.tv_usec / 1000);
+        printf("now time: %ld.%lds\n", ref.tv_sec, ref.tv_usec / 1000);
         ref.tv_usec=500000;
       }
       else if(ref.tv_usec==500000&&ref.tv_usec<dut.tv_usec){
