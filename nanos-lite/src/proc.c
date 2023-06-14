@@ -49,9 +49,11 @@ void init_proc() {
   // naive_uload(NULL, "/bin/pal");
 }
 
+bool ret = false;
+
 Context* schedule(Context *prev) {
   current->cp = prev;
-  if (current == &pcb[0]) {
+  if (ret) {
     Log("Set pcb1!");
     current = &pcb[1];
   }
@@ -59,5 +61,6 @@ Context* schedule(Context *prev) {
     Log("Set pcb0!");
     current = &pcb[0];
   }
+  ret = !ret;
   return current->cp;
 }
