@@ -22,14 +22,16 @@ void switch_boot_pcb() {
 void hello_fun(void *arg) {
   int j = 1;
   while (1) {
-    Log("Hello World from Nanos-lite with arg '%p' for the %dth time!", (uintptr_t)arg, j);
+    Log("Hello World from Nanos-lite with arg '%s' for the %dth time!", (char*)arg, j);
     j ++;
     yield();
   }
 }
 
 void init_proc() {
+  char a[5] = "yyy";
   context_kload(&pcb[0], hello_fun, NULL);
+  context_kload(&pcb[1], hello_fun, (void*)a);
   switch_boot_pcb();
 
   Log("Initializing processes...");
@@ -49,7 +51,13 @@ void init_proc() {
 
 Context* schedule(Context *prev) {
   current->cp = prev;
-  current = &pcb[0];
-  Log("Set pcb0");
+  if (current == &pcb[0]) {
+    Log("Set pcb1!");
+    current = &pcb[1];
+  }
+  else {
+    Log("Set pcb0!");
+    current = &pcb[0];
+  }
   return current->cp;
 }
