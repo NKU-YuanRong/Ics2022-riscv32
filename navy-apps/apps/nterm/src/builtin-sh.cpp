@@ -23,7 +23,7 @@ static void sh_prompt() {
 }
 
 static void sh_handle_cmd(const char *cmd) {
-  char inst[128];
+  char inst[64];
   strcpy(inst, cmd);
   inst[strlen(inst)] = '\0';
   
