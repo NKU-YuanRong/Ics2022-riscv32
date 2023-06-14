@@ -8,7 +8,7 @@ static Context* do_event(Event e, Context* c) {
   	case 1: // Log("Yield handle successfully!"); c->mepc += 4; break;
       Log("new yield!"); c = schedule(c); c->mepc += 4; break;
     case 2: do_syscall(c); c->mepc += 4; break;
-    case 5: c = schedule(c); c->mepc += 4; break;
+    case 4: c = schedule(c); c->mepc += 4; break;
     default: panic("Unhandled event ID = %d", e.event);
   }
 
