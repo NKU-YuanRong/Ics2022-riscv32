@@ -23,11 +23,11 @@ static void sh_prompt() {
 }
 
 static void sh_handle_cmd(const char *cmd) {
-  char command[128];
-  strcpy(command, cmd);
-  // command[strlen(command)] = '\0';
+  char inst[128];
+  strcpy(inst, cmd);
+  inst[strlen(inst)] = '\0';
   
-  char *token = strtok(command, " ");
+  char *token = strtok(inst, " ");
   char *argv[16];
   int argc = 0;
   
