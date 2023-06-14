@@ -8,9 +8,9 @@ static PCB pcb[MAX_NR_PROC] __attribute__((used)) = {};
 static PCB pcb_boot = {};
 PCB *current = NULL;
 
-// void context_uload(PCB* pcb,const char *filename);
+void context_uload(PCB* pcb,const char *filename);
 
-void context_kload(PCB* create_pcb,void (*entry)(void*),void *arg){
+void context_kload(PCB* create_pcb, void (*entry)(void*), void *arg){
   Area stack = {create_pcb->stack, create_pcb->stack + STACK_SIZE};
   create_pcb->cp = kcontext(stack, entry, arg);
 }
@@ -29,9 +29,12 @@ void hello_fun(void *arg) {
 }
 
 void init_proc() {
-  size_t num1 = 1, num2 = 2;
+  size_t num1 = 1;
   context_kload(&pcb[0], hello_fun, &num1);
-  context_kload(&pcb[1], hello_fun, &num2);
+
+  // size_t num2 = 2;
+  // context_kload(&pcb[1], hello_fun, &num2);
+  context_uload(&pcb[1], "/bin/pal");
   switch_boot_pcb();
 
   Log("Initializing processes...");
@@ -49,11 +52,10 @@ void init_proc() {
   // naive_uload(NULL, "/bin/pal");
 }
 
-bool ret = false;
-
+bool s_ret = false;
 Context* schedule(Context *prev) {
   current->cp = prev;
-  if (ret) {
+  if (s_ret) {
     Log("Set pcb1!");
     current = &pcb[1];
   }
@@ -61,6 +63,6 @@ Context* schedule(Context *prev) {
     Log("Set pcb0!");
     current = &pcb[0];
   }
-  ret = !ret;
+  s_ret = !s_ret;
   return current->cp;
 }
