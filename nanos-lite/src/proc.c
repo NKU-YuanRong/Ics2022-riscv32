@@ -31,7 +31,7 @@ void hello_fun(void *arg) {
 void init_proc() {
   // char a[5] = "yyy";
   context_kload(&pcb[0], hello_fun, NULL);
-  // context_kload(&pcb[1], hello_fun, NULL);
+  context_kload(&pcb[1], hello_fun, NULL);
   switch_boot_pcb();
 
   Log("Initializing processes...");
@@ -53,15 +53,14 @@ bool ret = false;
 
 Context* schedule(Context *prev) {
   current->cp = prev;
-  // if (ret) {
-  //   Log("Set pcb1!");
-  //   current = &pcb[1];
-  // }
-  // else {
-  //   Log("Set pcb0!");
-  //   current = &pcb[0];
-  // }
-  // ret = !ret;
-  current = &pcb[0];
+  if (ret) {
+    Log("Set pcb1!");
+    current = &pcb[1];
+  }
+  else {
+    Log("Set pcb0!");
+    current = &pcb[0];
+  }
+  ret = !ret;
   return current->cp;
 }
