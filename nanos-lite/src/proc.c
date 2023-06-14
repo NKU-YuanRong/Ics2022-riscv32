@@ -11,7 +11,6 @@ PCB *current = NULL;
 // void context_uload(PCB* pcb,const char *filename);
 
 void context_kload(PCB* create_pcb,void (*entry)(void*),void *arg){
-  Log("Run!");
   Area stack={create_pcb->stack, create_pcb->stack + STACK_SIZE};
   create_pcb->cp = kcontext(stack, entry, arg);
 }
