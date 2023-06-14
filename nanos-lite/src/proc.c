@@ -11,8 +11,9 @@ PCB *current = NULL;
 // void context_uload(PCB* pcb,const char *filename);
 
 void context_kload(PCB* create_pcb,void (*entry)(void*),void *arg){
-  Area stack={create_pcb->stack,create_pcb->stack+STACK_SIZE};
-  create_pcb->cp=kcontext(stack,entry,arg);
+  Log("Run!");
+  Area stack={create_pcb->stack, create_pcb->stack + STACK_SIZE};
+  create_pcb->cp = kcontext(stack, entry, arg);
 }
 
 void switch_boot_pcb() {
@@ -31,7 +32,7 @@ void hello_fun(void *arg) {
 void init_proc() {
   context_kload(&pcb[0], hello_fun, NULL);
   switch_boot_pcb();
-  
+
   Log("Initializing processes...");
 
   // load program here
