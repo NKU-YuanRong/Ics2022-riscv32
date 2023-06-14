@@ -56,13 +56,12 @@ bool s_ret = false;
 Context* schedule(Context *prev) {
   current->cp = prev;
   if (s_ret) {
-    Log("Set pcb1!");
     current = &pcb[1];
   }
   else {
-    Log("Set pcb0!");
     current = &pcb[0];
   }
+  Log("Control change!");
   s_ret = !s_ret;
   return current->cp;
 }
