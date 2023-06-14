@@ -62,6 +62,7 @@ int fs_open(const char *path){
       return i;
     }
   }
+  Log("Wrong open!");
   return -1;
 }
 
