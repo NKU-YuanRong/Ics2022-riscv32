@@ -53,6 +53,7 @@ const int FD_SIZE = sizeof(file_table) / sizeof(file_table[0]);
 
 
 int fs_open(const char *path){
+  Log("Open file: %s", path);
   if(strcmp(path, file_table[FD_EVENT].name) == 0) return FD_EVENT;
   if(strcmp(path, file_table[FD_DISPINFO].name) == 0) return FD_DISPINFO;
   if(strcmp(path, file_table[FD_FB].name) == 0) return FD_FB;
