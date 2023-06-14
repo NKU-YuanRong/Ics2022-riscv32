@@ -23,6 +23,18 @@ static void sh_prompt() {
 }
 
 static void sh_handle_cmd(const char *cmd) {
+  char *token = strtok((char*)cmd, " ");
+  char *argv[16];
+  int argc = 0;
+  
+  while(token) {
+    argv[argc++] = token;
+    token = strtok(NULL, " ");
+  }
+  argv[argc] = NULL;
+  
+  execvp(argv[0], argv);
+  /*
   char command[128];
   strcpy(command, cmd);
   command[strlen(command) - 1] = '\0';
@@ -33,13 +45,14 @@ static void sh_handle_cmd(const char *cmd) {
   int argc = 0;
 
   token = strtok(command, split);
-  while( token != NULL ) {
+  while(token) {
     argv[argc++] = token;
     token = strtok(NULL, split);
   }
   argv[argc] = NULL;
   
   execvp(argv[0], argv);
+  */
 }
 
 void builtin_sh_run() {
