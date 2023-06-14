@@ -11,7 +11,7 @@ PCB *current = NULL;
 // void context_uload(PCB* pcb,const char *filename);
 
 void context_kload(PCB* create_pcb,void (*entry)(void*),void *arg){
-  Area stack={create_pcb->stack, create_pcb->stack + STACK_SIZE};
+  Area stack = {create_pcb->stack, create_pcb->stack + STACK_SIZE};
   create_pcb->cp = kcontext(stack, entry, arg);
 }
 
@@ -50,5 +50,6 @@ void init_proc() {
 Context* schedule(Context *prev) {
   current->cp = prev;
   current = &pcb[0];
+  Log("Set pcb0");
   return current->cp;
 }
