@@ -22,16 +22,16 @@ void switch_boot_pcb() {
 void hello_fun(void *arg) {
   int j = 1;
   while (1) {
-    Log("Hello World from Nanos-lite with arg '%p' for the %dth time!", (char*)arg, j);
+    Log("Hello World from Nanos-lite with arg '%d' for the %dth time!", (int*)arg, j);
     j ++;
     yield();
   }
 }
 
 void init_proc() {
-  // char a[5] = "yyy";
-  context_kload(&pcb[0], hello_fun, NULL);
-  context_kload(&pcb[1], hello_fun, NULL);
+  int num1 = 1, num2 = 2;
+  context_kload(&pcb[0], hello_fun, &num1);
+  context_kload(&pcb[1], hello_fun, &num2);
   switch_boot_pcb();
 
   Log("Initializing processes...");
