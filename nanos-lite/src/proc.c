@@ -29,9 +29,9 @@ void hello_fun(void *arg) {
 }
 
 void init_proc() {
-  char a[5] = "yyy";
+  // char a[5] = "yyy";
   context_kload(&pcb[0], hello_fun, NULL);
-  context_kload(&pcb[1], hello_fun, (void*)a);
+  context_kload(&pcb[1], hello_fun, NULL);
   switch_boot_pcb();
 
   Log("Initializing processes...");
