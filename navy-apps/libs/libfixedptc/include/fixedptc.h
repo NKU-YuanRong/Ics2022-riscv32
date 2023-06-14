@@ -73,6 +73,7 @@
 #endif
 
 #include <stdint.h>
+#include <assert.h>
 
 #ifdef __cplusplus
 extern "C" {
