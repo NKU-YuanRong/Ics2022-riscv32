@@ -14,6 +14,9 @@
 ***************************************************************************************/
 
 #include <isa.h>
+#include <cpu/cpu.h>
+
+// #define IRQ_TIMER 0x80000007  // for riscv32
 
 word_t isa_raise_intr(word_t NO, vaddr_t epc) {
   /* TODO: Trigger an interrupt/exception with ``NO''.
@@ -24,6 +27,10 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
   return cpu.sr.mtvec;
 }
 
-word_t isa_query_intr() {
-  return INTR_EMPTY;
-}
+// word_t isa_query_intr() {
+//   if (cpu.INTR == true) {
+//     cpu.INTR = false;
+//     return IRQ_TIMER;
+//   }
+//   return INTR_EMPTY;
+// }
